@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "imgui.h"
+#include "imgui_internal.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "backends/imgui_impl_opengl3.cpp"
@@ -23,6 +25,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     auto* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "NARC", nullptr, nullptr);
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -40,6 +43,7 @@ int main()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    io.ConfigDockingWithShift = true;
     ImGui::StyleColorsDark();
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -59,6 +63,7 @@ int main()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGui::DockSpaceOverViewport();
         {
             ImGui::Begin("Window");
             if (ImGui::Button("Toggle Demo Window"))
@@ -88,5 +93,6 @@ int main()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+    glfwDestroyWindow(window);
     glfwTerminate();
 }
