@@ -5,7 +5,7 @@
 App::App()
 {
     _appWindow = nullptr;
-    show_demo_window = true;
+    _show_demo_window = true;
 }
 
 App::~App()
@@ -87,7 +87,7 @@ void App::Run()
             }
             if (ImGui::Button("Toggle Demo Window"))
             {
-                show_demo_window = !show_demo_window;
+                _show_demo_window = !_show_demo_window;
             }
             ImGui::End();
         }
@@ -102,9 +102,9 @@ void App::Run()
             ImGui::Begin("Response");
             ImGui::End();
         }
-        if (show_demo_window)
+        if (_show_demo_window)
         {
-            ImGui::ShowDemoWindow(&show_demo_window);   
+            ImGui::ShowDemoWindow(&_show_demo_window);   
         }
         ImGui::Render();
         glClearColor(0, 0, 0, 1);
