@@ -69,39 +69,11 @@ void App::Run()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGui::DockSpaceOverViewport();
-        // Workspace Window
-        {
-            static std::string comboName = std::string();
-            ImGui::Begin("Workspace");
-            if(ImGui::BeginCombo("", comboName.c_str()))
-            {
-                for (int i = 1; i < 6; i++)
-                {
-                    std::string itemName = "Workspace " + std::to_string(i);
-                    if(ImGui::Selectable(itemName.c_str()))
-                    {
-                        comboName = itemName;
-                    }
-                }
-                ImGui::EndCombo();
-            }
-            if (ImGui::Button("Toggle Demo Window"))
-            {
-                _show_demo_window = !_show_demo_window;
-            }
-            ImGui::End();
-        }
-        // Request Window
-        {
-            ImGui::Begin("Request");
-            ImGui::End();
-        }
-
-        // Response Window
-        {
-            ImGui::Begin("Response");
-            ImGui::End();
-        }
+        
+        _workspace.Draw();
+        _request.Draw();
+        _response.Draw();
+        
         if (_show_demo_window)
         {
             ImGui::ShowDemoWindow(&_show_demo_window);   
