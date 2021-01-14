@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -69,6 +71,23 @@ int main()
             if (ImGui::Button("Toggle Demo Window"))
             {
                 show_demo_window = !show_demo_window;
+            }
+            ImGui::End();
+        }
+        {
+            static std::string comboName = std::string();
+            ImGui::Begin("Requests");
+            if(ImGui::BeginCombo("", comboName.c_str()))
+            {
+                for (int i = 1; i < 6; i++)
+                {
+                    std::string itemName = "Workspace " + std::to_string(i);
+                    if(ImGui::Selectable(itemName.c_str()))
+                    {
+                        comboName = itemName;
+                    }
+                }
+                ImGui::EndCombo();
             }
             ImGui::End();
         }
