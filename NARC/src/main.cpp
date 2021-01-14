@@ -74,9 +74,10 @@ int main()
             }
             ImGui::End();
         }
+        // Workspace Window
         {
             static std::string comboName = std::string();
-            ImGui::Begin("Requests");
+            ImGui::Begin("Workspace");
             if(ImGui::BeginCombo("", comboName.c_str()))
             {
                 for (int i = 1; i < 6; i++)
@@ -89,6 +90,18 @@ int main()
                 }
                 ImGui::EndCombo();
             }
+            ImGui::End();
+        }
+
+        // Request Window
+        {
+            ImGui::Begin("Request");
+            ImGui::End();
+        }
+
+        // Response Window
+        {
+            ImGui::Begin("Response");
             ImGui::End();
         }
         if (show_demo_window)
