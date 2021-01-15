@@ -7,7 +7,8 @@ void Request::Draw() const
     static std::array<char, 2048> _requestUrlBuffer = {};
     static  int _requestTypeIndex = 0;
     static  const std::array<std::string, 7> _requestTypes = {"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"};
-    if(ImGui::BeginCombo("Request Type", _requestTypes.at(_requestTypeIndex).c_str()))
+    ImGui::PushItemWidth(-FLT_MIN);
+    if(ImGui::BeginCombo("###RequestType", _requestTypes.at(_requestTypeIndex).c_str()))
     {
         for (int i = 0; i < _requestTypes.size(); i++)
         {
@@ -23,7 +24,8 @@ void Request::Draw() const
         }
         ImGui::EndCombo();
     }
-    ImGui::InputText("Request URL", _requestUrlBuffer.data(), _requestUrlBuffer.max_size());
+    ImGui::InputText("###RequestURL", _requestUrlBuffer.data(), _requestUrlBuffer.max_size());
+    ImGui::PopItemWidth();
     if (ImGui::Button("Send"))
     {
         std::thread{[&]() -> bool

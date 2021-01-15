@@ -4,7 +4,7 @@ void Workspace::Draw() const
 {
     static std::string comboName = std::string();
     ImGui::Begin("Workspace");
-    if(ImGui::BeginCombo("Workspace", comboName.c_str()))
+    if(ImGui::BeginCombo("###Workspace", comboName.c_str()))
     {
         for (int i = 1; i < 6; i++)
         {
