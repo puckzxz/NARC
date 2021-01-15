@@ -16,10 +16,7 @@ void Request::Draw() const
             std::cout << "Trying to get: " << requestUrl << std::endl;
             const auto resp = cpr::Get(cpr::Url{requestUrl});
             std::cout << "Got response code: " << resp.status_code << std::endl;
-            std::cout << resp.text << std::endl;
-            std::cout << json::parse(resp.text).dump(4) << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds{5});
-            std::cout << "Done sleeping" << std::endl;
+            Response::JsonResponse = json::parse(resp.text).dump(4);
             return resp.status_code == 200;
         }}.detach();
     }

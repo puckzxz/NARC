@@ -8,6 +8,8 @@
 #include <thread>
 #include "nlohmann/json.hpp"
 
+#include "Response.h"
+
 using json = nlohmann::json;
 
 // TODO: Convert to singleton pattern
