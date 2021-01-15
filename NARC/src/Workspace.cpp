@@ -2,6 +2,7 @@
 
 void Workspace::Draw() const
 {
+    // TODO: Fix default item, refer to Request.cpp
     static std::string comboName = std::string();
     ImGui::Begin("Workspace");
     if(ImGui::BeginCombo("###Workspace", comboName.c_str()))
