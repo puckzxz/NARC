@@ -2,6 +2,7 @@
 
 #include "imgui.h"
 #include <cpr/cpr.h>
+#include <array>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -12,4 +13,7 @@ class Request
 {
 public:
     void Draw() const;
+
+private:
+    inline static std::array<char, 2048> _requestUrlBuffer = {};
 };
