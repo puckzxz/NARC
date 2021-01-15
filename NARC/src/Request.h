@@ -4,6 +4,7 @@
 #include <cpr/cpr.h>
 #include <iostream>
 #include <string>
+#include <thread>
 
 // TODO: Convert to singleton pattern
 
