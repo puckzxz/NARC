@@ -20,5 +20,4 @@ public:
     void Draw() const;
 
 private:
-    inline static std::array<char, 2048> _requestUrlBuffer = {};
 };

@@ -26,7 +26,7 @@ bool App::Init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     _appWindow = glfwCreateWindow(App::Width, App::Height, "NARC", nullptr, nullptr);
     glfwMakeContextCurrent(_appWindow);
-    glfwSwapInterval(1);
+    // glfwSwapInterval(1);
     if (_appWindow == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -43,7 +43,7 @@ bool App::Init()
     auto& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigDockingWithShift = true;
     ImGui::StyleColorsDark();
     ImGuiStyle& style = ImGui::GetStyle();
