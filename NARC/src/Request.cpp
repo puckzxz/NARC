@@ -17,6 +17,7 @@ void Request::Draw() const
             const auto resp = cpr::Get(cpr::Url{requestUrl});
             std::cout << "Got response code: " << resp.status_code << std::endl;
             std::cout << resp.text << std::endl;
+            std::cout << json::parse(resp.text).dump(4) << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds{5});
             std::cout << "Done sleeping" << std::endl;
             return resp.status_code == 200;

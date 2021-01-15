@@ -6,6 +6,9 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 // TODO: Convert to singleton pattern
 
