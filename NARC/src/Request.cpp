@@ -16,7 +16,7 @@ void Request::Draw() const
             std::cout << "Trying to get: " << requestUrl << std::endl;
             const auto resp = cpr::Get(cpr::Url{requestUrl});
             std::cout << "Got response code: " << resp.status_code << std::endl;
-            Response::JsonResponse = json::parse(resp.text).dump(4);
+            Response::SetJSON(json::parse(resp.text).dump(4));
             return resp.status_code == 200;
         }}.detach();
     }
