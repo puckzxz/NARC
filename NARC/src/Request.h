@@ -1,16 +1,16 @@
 ﻿#pragma once
 
 #include "imgui.h"
-#include <cpr/cpr.h>
-#include <array>
-#include <iostream>
-#include <string>
 #include <thread>
-#include "nlohmann/json.hpp"
-
+#include <iostream>
+#include <cpr/cpr.h>
 #include "Response.h"
+#include "nlohmann/json.hpp"
+#include <mutex>
 
 using json = nlohmann::json;
+
+static std::mutex RequestMutex;
 
 // TODO: Convert to singleton pattern
 

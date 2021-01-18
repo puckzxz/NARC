@@ -4,7 +4,7 @@ void Request::Draw() const
 {
     ImGui::Begin("Request");
     // TODO: Convert to std::string
-    static std::array<char, 2048> _requestUrlBuffer = {};
+    static std::array<char, 4096> requestUrlBuffer;
     static  int _requestTypeIndex = 0;
     static  const std::array<std::string, 7> _requestTypes = {"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"};
     ImGui::PushItemWidth(-FLT_MIN);
@@ -24,22 +24,22 @@ void Request::Draw() const
         }
         ImGui::EndCombo();
     }
-    ImGui::InputText("###RequestURL", _requestUrlBuffer.data(), _requestUrlBuffer.max_size());
+    ImGui::InputText("###RequestURL", requestUrlBuffer.data(), requestUrlBuffer.size());
     ImGui::PopItemWidth();
     if (ImGui::Button("Send"))
     {
-        std::thread{[&]() -> bool
+        std::thread{[&]() -> void
         {
-            const std::string requestUrl(_requestUrlBuffer.begin(), _requestUrlBuffer.end());
+            const std::string requestUrl = requestUrlBuffer.data();
             if (requestUrl.length() <= 0)
             {
-                return false;
+                return;
             }
             std::cout << "Trying to get: " << requestUrl << std::endl;
             const auto resp = cpr::Get(cpr::Url{requestUrl});
             std::cout << "Got response code: " << resp.status_code << std::endl;
+            Response::SetResponseCode(resp.status_code);
             Response::SetJSON(json::parse(resp.text).dump(4));
-            return resp.status_code == 200;
         }}.detach();
     }
     ImGui::End();
