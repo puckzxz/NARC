@@ -1,5 +1,7 @@
 ﻿#include "Workspace.h"
 
+Workspace s_Workspace;
+
 void Workspace::Draw() const
 {
     // TODO: Fix default item, refer to Request.cpp
@@ -18,4 +20,9 @@ void Workspace::Draw() const
         ImGui::EndCombo();
     }
     ImGui::End();
+}
+
+Workspace& Workspace::Get()
+{
+    return s_Workspace;
 }

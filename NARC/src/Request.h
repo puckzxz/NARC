@@ -7,10 +7,9 @@
 #include "Response.h"
 #include "nlohmann/json.hpp"
 #include <mutex>
+#include "App.h"
 
 using json = nlohmann::json;
-
-static std::mutex RequestMutex;
 
 // TODO: Convert to singleton pattern
 
@@ -18,6 +17,7 @@ class Request
 {
 public:
     void Draw() const;
+    static Request& Get();
 
 private:
 };

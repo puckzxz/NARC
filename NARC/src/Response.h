@@ -4,16 +4,16 @@
 
 #include "TextEditor.h"
 
-// TODO: Convert to singleton pattern
-
 class Response
 {
 public:
     Response();
+    static Response& Get();
     void Draw() const;
-    static void SetJSON(const std::string& data);
-    static void SetResponseCode(const int32_t& code);
+    void SetJSON(const std::string& data);
+    void SetResponseCode(const int32_t& code);
 
-    inline static std::string JsonResponse;
-    inline static int32_t ResponseCode;
+private:
+    std::string m_jsonResponse;
+    int32_t m_responseCode;
 };

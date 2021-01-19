@@ -4,8 +4,8 @@
 
 App::App()
 {
-    _appWindow = nullptr;
-    _show_demo_window = true;
+    m_appWindow = nullptr;
+    m_show_demo_window = true;
 }
 
 App::~App()
@@ -14,7 +14,7 @@ App::~App()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    glfwDestroyWindow(_appWindow);
+    glfwDestroyWindow(m_appWindow);
     glfwTerminate();
 }
 
@@ -24,10 +24,10 @@ bool App::Init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    _appWindow = glfwCreateWindow(App::Width, App::Height, "NARC", nullptr, nullptr);
-    glfwMakeContextCurrent(_appWindow);
+    m_appWindow = glfwCreateWindow(App::Width, App::Height, "NARC", nullptr, nullptr);
+    glfwMakeContextCurrent(m_appWindow);
     // glfwSwapInterval(1);
-    if (_appWindow == nullptr)
+    if (m_appWindow == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -52,16 +52,16 @@ bool App::Init()
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
-    ImGui_ImplGlfw_InitForOpenGL(_appWindow, true);
+    ImGui_ImplGlfw_InitForOpenGL(m_appWindow, true);
     ImGui_ImplOpenGL3_Init("#version 460");
     glViewport(0, 0, App::Width, App::Height);
-    glfwSetFramebufferSizeCallback(_appWindow, framebufferCallback);
+    glfwSetFramebufferSizeCallback(m_appWindow, framebufferCallback);
     return true;
 }
 
 void App::Run()
 {
-    while (!glfwWindowShouldClose(_appWindow))
+    while (!glfwWindowShouldClose(m_appWindow))
     {
         glViewport(0, 0, App::Width, App::Height);
         glfwPollEvents();
@@ -70,13 +70,17 @@ void App::Run()
         ImGui::NewFrame();
         ImGui::DockSpaceOverViewport();
         
-        _workspace.Draw();
-        _request.Draw();
-        _response.Draw();
+        // m_workspace.Draw();
+        // m_request.Draw();
+        // m_response.Draw();
+
+        Workspace::Get().Draw();
+        Request::Get().Draw();
+        Response::Get().Draw();
         
-        if (_show_demo_window)
+        if (m_show_demo_window)
         {
-            ImGui::ShowDemoWindow(&_show_demo_window);   
+            ImGui::ShowDemoWindow(&m_show_demo_window);   
         }
         ImGui::Render();
         glClearColor(0, 0, 0, 1);
@@ -89,7 +93,7 @@ void App::Run()
             glfwMakeContextCurrent(backup_current_context);
         }
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(_appWindow);
+        glfwSwapBuffers(m_appWindow);
     }
 }
 

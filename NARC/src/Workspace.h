@@ -8,4 +8,5 @@ class Workspace
 {
 public:
     void Draw() const;
+    static Workspace& Get();
 };

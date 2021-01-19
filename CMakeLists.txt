@@ -20,7 +20,6 @@ target_link_libraries(NARC PRIVATE glfw)
 find_package(cpr CONFIG REQUIRED)
 target_link_libraries(NARC PRIVATE cpr)
 
-
 find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(NARC PRIVATE nlohmann_json nlohmann_json::nlohmann_json)
 
