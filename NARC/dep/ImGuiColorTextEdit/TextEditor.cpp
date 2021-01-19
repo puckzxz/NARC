@@ -3164,7 +3164,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::JSON()
 	static bool inited = false;
 	static LanguageDefinition langDef;
 	static const char* const keywords[] = {
-		"true", "false"
+		"true", "false", "null"
     };
 
 	for (auto& k : keywords)
@@ -3173,7 +3173,7 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::JSON()
 	if (!inited)
 	{
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"("(?:\\.|[^"\\])*"(?=\s*:))", PaletteIndex::String));
-		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"(/^"(?:\\.|[^"\\])*"/)", PaletteIndex::Number));
+		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"("(?:\\.|[^"\\])*")", PaletteIndex::Preprocessor));
 		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("0[xX][0-9a-fA-F]+[uU]?[lL]?[lL]?", PaletteIndex::Number));
 		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?[fF]?", PaletteIndex::Number));
 		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("[+-]?[0-9]+[Uu]?[lL]?[lL]?", PaletteIndex::Number));
