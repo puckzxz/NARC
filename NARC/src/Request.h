@@ -18,6 +18,4 @@ class Request
 public:
     void Draw() const;
     static Request& Get();
-
-private:
 };

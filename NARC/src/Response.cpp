@@ -4,8 +4,6 @@
 
 TextEditor s_Editor;
 
-static Response s_Response;
-
 Response::Response()
 {
     m_responseCode = 0;
@@ -17,7 +15,8 @@ Response::Response()
 
 Response& Response::Get()
 {
-    return s_Response;
+    static Response it;
+    return it;
 }
 
 void Response::Draw() const
