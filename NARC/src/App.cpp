@@ -6,11 +6,13 @@ App::App()
 {
     m_appWindow = nullptr;
     m_show_demo_window = true;
+    m_showWorkspacePanel = true;
+    m_showRequestPanel = true;
+    m_showResponsePanel = true;
 }
 
 App::~App()
 {
-    
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -69,18 +71,57 @@ void App::Run()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGui::DockSpaceOverViewport();
-        
+
         // m_workspace.Draw();
         // m_request.Draw();
         // m_response.Draw();
 
-        Workspace::Get().Draw();
-        Request::Get().Draw();
-        Response::Get().Draw();
-        
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Exit"))
+                {
+                    glfwSetWindowShouldClose(m_appWindow, true);
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("View"))
+            {
+                if (ImGui::MenuItem("Toggle Workspace Panel"))
+                {
+                    m_showWorkspacePanel = !m_showWorkspacePanel;
+                }
+                if (ImGui::MenuItem("Toggle Request Panel"))
+                {
+                    m_showRequestPanel = !m_showRequestPanel;
+                }
+                if (ImGui::MenuItem("Toggle Response Panel"))
+                {
+                    m_showResponsePanel = !m_showResponsePanel;
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
+
+        if (m_showWorkspacePanel)
+        {
+            Workspace::Get().Draw();
+        }
+        if (m_showRequestPanel)
+        {
+            Request::Get().Draw();
+        }
+        if (m_showResponsePanel)
+        {
+            Response::Get().Draw();
+
+        }
+
         if (m_show_demo_window)
         {
-            ImGui::ShowDemoWindow(&m_show_demo_window);   
+            ImGui::ShowDemoWindow(&m_show_demo_window);
         }
         ImGui::Render();
         glClearColor(0, 0, 0, 1);

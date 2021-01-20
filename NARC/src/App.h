@@ -22,5 +22,8 @@ public:
 private:
     GLFWwindow* m_appWindow;
     bool m_show_demo_window;
+    bool m_showWorkspacePanel;
+    bool m_showRequestPanel;
+    bool m_showResponsePanel;
     static void framebufferCallback(GLFWwindow* window, const int width, const int height);
 };
