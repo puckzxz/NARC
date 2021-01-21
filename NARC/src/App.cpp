@@ -47,8 +47,10 @@ bool App::Init()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigDockingWithShift = true;
+    io.ConfigDockingTransparentPayload = true;
     ImGui::StyleColorsDark();
     ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowBorderSize = 0.0f;
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
