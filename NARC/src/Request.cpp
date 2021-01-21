@@ -1,7 +1,5 @@
 ﻿#include "Request.h"
 
-static Request s_Request;
-
 void Request::Draw() const
 {
     ImGui::Begin("Request");
@@ -39,9 +37,8 @@ void Request::Draw() const
                 {
                     return;
                 }
-                std::cout << "Trying to get: " << requestUrl << std::endl;
-                const auto resp = cpr::Get(cpr::Url{requestUrl});
-                std::cout << "Got response code: " << resp.status_code << std::endl;
+                auto resp = cpr::Get(cpr::Url{requestUrl});
+                Response::Get().SetResponseDuration(resp.elapsed);
                 Response::Get().SetResponseCode(resp.status_code);
                 Response::Get().SetJSON(json::parse(resp.text).dump(4));
             }
@@ -52,5 +49,6 @@ void Request::Draw() const
 
 Request& Request::Get()
 {
+    static Request s_Request;
     return s_Request;
 }

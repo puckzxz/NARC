@@ -8,11 +8,9 @@
 #include "nlohmann/json.hpp"
 #include <mutex>
 #include "App.h"
+#include <chrono>
 
 using json = nlohmann::json;
-
-// TODO: Convert to singleton pattern
-
 class Request
 {
 public:
