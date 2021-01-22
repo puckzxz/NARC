@@ -24,21 +24,48 @@ void Response::Draw() const
 {
     ImGui::Begin("Response");
     if (m_responseCode >= 100 && m_responseCode <= 199)
-        ImGui::TextColored({150, 150, 150, 1}, "%d", m_responseCode);
+        ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_responseCode);
     if (m_responseCode >= 200 && m_responseCode <= 299)
-        ImGui::TextColored({0, 255, 0, 1}, "%d", m_responseCode);
+        ImGui::TextColored({ 0, 255, 0, 1 }, "%d", m_responseCode);
     if (m_responseCode >= 300 && m_responseCode <= 399)
-        ImGui::TextColored({255, 255, 0, 1}, "%d", m_responseCode);
+        ImGui::TextColored({ 255, 255, 0, 1 }, "%d", m_responseCode);
     if (m_responseCode >= 400 && m_responseCode <= 499)
-        ImGui::TextColored({255, 165, 0, 1}, "%d", m_responseCode);
+        ImGui::TextColored({ 255, 165, 0, 1 }, "%d", m_responseCode);
     if (m_responseCode >= 500 && m_responseCode <= 599)
-        ImGui::TextColored({255, 0, 0, 1}, "%d", m_responseCode);
+        ImGui::TextColored({ 255, 0, 0, 1 }, "%d", m_responseCode);
     if (m_responseDuration != 0)
     {
         ImGui::SameLine();
         ImGui::Text("%.3f", m_responseDuration);
     }
-    s_Editor.Render("Text Editor");
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+    if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+    {
+        if (ImGui::BeginTabItem("JSON"))
+        {
+            s_Editor.Render("Text Editor");
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Headers"))
+        {
+            ImVec2 outer_size = ImVec2(-FLT_MIN, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 0.0f);
+            if (ImGui::BeginTable("##Headers", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
+            {
+                for (const auto& header : m_responseHeaders)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    ImGui::Text(header.first.c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::TextWrapped(header.second.c_str());
+                }
+                ImGui::EndTable();
+            }
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+    }
     ImGui::End();
 }
 
@@ -56,4 +83,9 @@ void Response::SetResponseCode(const int32_t& code)
 void Response::SetResponseDuration(const double& time)
 {
     m_responseDuration = time;
+}
+
+void Response::SetResponseHeaders(const cpr::Header& headers)
+{
+    m_responseHeaders = headers;
 }

@@ -38,6 +38,7 @@ void Request::Draw() const
                     return;
                 }
                 auto resp = cpr::Get(cpr::Url{requestUrl});
+                Response::Get().SetResponseHeaders(resp.header);
                 Response::Get().SetResponseDuration(resp.elapsed);
                 Response::Get().SetResponseCode(resp.status_code);
                 Response::Get().SetJSON(json::parse(resp.text).dump(4));
