@@ -4,9 +4,9 @@
 
 // TODO: Convert to singleton pattern
 
-class Workspace
+class WorkspaceWindow
 {
 public:
     void Draw() const;
-    static Workspace& Get();
+    static WorkspaceWindow& Get();
 };

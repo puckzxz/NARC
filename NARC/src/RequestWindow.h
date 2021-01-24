@@ -4,7 +4,7 @@
 #include <thread>
 #include <iostream>
 #include <cpr/cpr.h>
-#include "Response.h"
+#include "ResponseWindow.h"
 #include "nlohmann/json.hpp"
 #include <mutex>
 #include "App.h"

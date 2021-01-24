@@ -1,8 +1,10 @@
-﻿#include "Workspace.h"
+﻿#include "WorkspaceWindow.h"
 
-Workspace s_Workspace;
+#include "WorkspaceManager.h"
 
-void Workspace::Draw() const
+WorkspaceWindow s_Workspace;
+
+void WorkspaceWindow::Draw() const
 {
     // TODO: Fix default item, refer to Request.cpp
     static std::string comboName = "Workspace 1";
@@ -19,10 +21,22 @@ void Workspace::Draw() const
         }
         ImGui::EndCombo();
     }
+    if (ImGui::Button("Write File"))
+    {
+        WorkspaceManager::WriteFile();
+    }
+    if (ImGui::Button("Delete File"))
+    {
+        WorkspaceManager::DeleteFile();
+    }
+    if (ImGui::Button("Read File"))
+    {
+        WorkspaceManager::GetWorkspaces();
+    }
     ImGui::End();
 }
 
-Workspace& Workspace::Get()
+WorkspaceWindow& WorkspaceWindow::Get()
 {
     return s_Workspace;
 }

@@ -6,9 +6,9 @@
 #include <string>
 #include <memory>
 #include "imgui.h"
-#include "Request.h"
-#include "Response.h"
-#include "Workspace.h"
+#include "RequestWindow.h"
+#include "ResponseWindow.h"
+#include "WorkspaceWindow.h"
 
 class App
 {
@@ -21,7 +21,7 @@ public:
     inline static int Height = 1080;
 private:
     GLFWwindow* m_appWindow;
-    bool m_show_demo_window;
+    bool m_showDemoWindow;
     bool m_showWorkspacePanel;
     bool m_showRequestPanel;
     bool m_showResponsePanel;

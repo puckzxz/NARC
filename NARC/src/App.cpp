@@ -5,7 +5,7 @@
 App::App()
 {
     m_appWindow = nullptr;
-    m_show_demo_window = true;
+    m_showDemoWindow = false;
     m_showWorkspacePanel = true;
     m_showRequestPanel = true;
     m_showResponsePanel = true;
@@ -74,10 +74,6 @@ void App::Run()
         ImGui::NewFrame();
         ImGui::DockSpaceOverViewport();
 
-        // m_workspace.Draw();
-        // m_request.Draw();
-        // m_response.Draw();
-
         if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -102,6 +98,10 @@ void App::Run()
                 {
                     m_showResponsePanel = !m_showResponsePanel;
                 }
+                if (ImGui::MenuItem("Toggle Demo Window"))
+                {
+                    m_showDemoWindow = !m_showDemoWindow;
+                }
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -109,7 +109,7 @@ void App::Run()
 
         if (m_showWorkspacePanel)
         {
-            Workspace::Get().Draw();
+            WorkspaceWindow::Get().Draw();
         }
         if (m_showRequestPanel)
         {
@@ -117,13 +117,13 @@ void App::Run()
         }
         if (m_showResponsePanel)
         {
-            Response::Get().Draw();
+            ResponseWindow::Get().Draw();
 
         }
 
-        if (m_show_demo_window)
+        if (m_showDemoWindow)
         {
-            ImGui::ShowDemoWindow(&m_show_demo_window);
+            ImGui::ShowDemoWindow(&m_showDemoWindow);
         }
         ImGui::Render();
         glClearColor(0, 0, 0, 1);

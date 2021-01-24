@@ -1,10 +1,10 @@
-﻿#include "Response.h"
+﻿#include "ResponseWindow.h"
 
-#include "Request.h"
+#include "RequestWindow.h"
 
 TextEditor s_Editor;
 
-Response::Response()
+ResponseWindow::ResponseWindow()
 {
     m_responseCode = 0;
     m_jsonResponse = "";
@@ -14,13 +14,13 @@ Response::Response()
     s_Editor.SetShowWhitespaces(false);
 }
 
-Response& Response::Get()
+ResponseWindow& ResponseWindow::Get()
 {
-    static Response it;
+    static ResponseWindow it;
     return it;
 }
 
-void Response::Draw() const
+void ResponseWindow::Draw() const
 {
     ImGui::Begin("Response");
     if (m_responseCode >= 100 && m_responseCode <= 199)
@@ -48,17 +48,15 @@ void Response::Draw() const
         }
         if (ImGui::BeginTabItem("Headers"))
         {
-            ImVec2 outer_size = ImVec2(-FLT_MIN, 0.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 0.0f);
             if (ImGui::BeginTable("##Headers", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
             {
-                for (const auto& header : m_responseHeaders)
+                for (const auto& [name, value] : m_responseHeaders)
                 {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
-                    ImGui::Text(header.first.c_str());
+                    ImGui::Text(name.c_str());
                     ImGui::TableNextColumn();
-                    ImGui::TextWrapped(header.second.c_str());
+                    ImGui::TextWrapped(value.c_str());
                 }
                 ImGui::EndTable();
             }
@@ -69,23 +67,23 @@ void Response::Draw() const
     ImGui::End();
 }
 
-void Response::SetJSON(const std::string& data)
+void ResponseWindow::SetJSON(const std::string& data)
 {
     m_jsonResponse = data;
     s_Editor.SetText(m_jsonResponse);
 }
 
-void Response::SetResponseCode(const int32_t& code)
+void ResponseWindow::SetResponseCode(const int32_t& code)
 {
     m_responseCode = code;
 }
 
-void Response::SetResponseDuration(const double& time)
+void ResponseWindow::SetResponseDuration(const double& time)
 {
     m_responseDuration = time;
 }
 
-void Response::SetResponseHeaders(const cpr::Header& headers)
+void ResponseWindow::SetResponseHeaders(const cpr::Header& headers)
 {
     m_responseHeaders = headers;
 }

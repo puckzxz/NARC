@@ -50,7 +50,7 @@ TextEditor::TextEditor()
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
 {
 	SetPalette(GetDarkPalette());
-	SetLanguageDefinition(LanguageDefinition::HLSL());
+	SetLanguageDefinition(LanguageDefinition::JSON());
 	mLines.push_back(Line());
 }
 
@@ -64,7 +64,7 @@ void TextEditor::SetLanguageDefinition(const LanguageDefinition & aLanguageDef)
 	mRegexList.clear();
 
 	for (auto& r : mLanguageDefinition.mTokenRegexStrings)
-		mRegexList.push_back(std::make_pair(std::regex(r.first, std::regex_constants::optimize), r.second));
+		mRegexList.push_back(std::make_pair(std::regex(r.first, std::regex_constants::optimize | std::regex_constants::ECMAScript), r.second));
 
 	Colorize();
 }
@@ -2188,11 +2188,11 @@ void TextEditor::ColorizeRange(int aFromLine, int aToLine)
 			if (hasTokenizeResult == false)
 			{
 				// todo : remove
-				//printf("using regex for %.*s\n", first + 10 < last ? 10 : int(last - first), first);
+				// printf("using regex for %.*s\n", first + 10 < last ? 10 : int(last - first), first);
 
 				for (auto& p : mRegexList)
 				{
-					if (std::regex_search(first, last, results, p.first, std::regex_constants::match_continuous))
+					if (std::regex_search(first, last, results, p.first, std::regex_constants::match_continuous | std::regex_constants::format_default))
 					{
 						hasTokenizeResult = true;
 
@@ -3163,50 +3163,53 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::JSON()
 {
 	static bool inited = false;
 	static LanguageDefinition langDef;
-	static const char* const keywords[] = {
-		"true", "false", "null"
-    };
-
-	for (auto& k : keywords)
-		langDef.mKeywords.insert(k);
 
 	if (!inited)
 	{
+		static const char* const cppKeywords[] = {
+			"true", "false", "null"
+        };
+		for (auto& k : cppKeywords)
+			langDef.mKeywords.insert(k);
+
+		// langDef.mTokenize = [](const char * in_begin, const char * in_end, const char *& out_begin, const char *& out_end, PaletteIndex & paletteIndex) -> bool
+		// {
+		// 	paletteIndex = PaletteIndex::Max;
+
+		// 	while (in_begin < in_end && isascii(*in_begin) && isblank(*in_begin))
+		// 		in_begin++;
+
+		// 	if (in_begin == in_end)
+		// 	{
+		// 		out_begin = in_end;
+		// 		out_end = in_end;
+		// 		paletteIndex = PaletteIndex::Default;
+		// 	}
+		// 	else if (TokenizeCStyleString(in_begin, in_end, out_begin, out_end))
+		// 		paletteIndex = PaletteIndex::String;
+		// 	else if (TokenizeCStyleCharacterLiteral(in_begin, in_end, out_begin, out_end))
+		// 		paletteIndex = PaletteIndex::CharLiteral;
+		// 	else if (TokenizeCStyleIdentifier(in_begin, in_end, out_begin, out_end))
+		// 		paletteIndex = PaletteIndex::Identifier;
+		// 	else if (TokenizeCStyleNumber(in_begin, in_end, out_begin, out_end))
+		// 		paletteIndex = PaletteIndex::Number;
+		// 	else if (TokenizeCStylePunctuation(in_begin, in_end, out_begin, out_end))
+		// 		paletteIndex = PaletteIndex::Punctuation;
+
+		// 	return paletteIndex != PaletteIndex::Max;
+		// };
+		// String Keys
 		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"("(?:\\.|[^"\\])*"(?=\s*:))", PaletteIndex::String));
-		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"("(?:\\.|[^"\\])*")", PaletteIndex::Preprocessor));
-		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("0[xX][0-9a-fA-F]+[uU]?[lL]?[lL]?", PaletteIndex::Number));
-		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?[fF]?", PaletteIndex::Number));
-		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("[+-]?[0-9]+[Uu]?[lL]?[lL]?", PaletteIndex::Number));
-		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("[a-zA-Z_][a-zA-Z0-9_]*", PaletteIndex::Identifier));
-		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("[\\[\\]\\{\\}\\!\\%\\^\\&\\*\\(\\)\\-\\+\\=\\~\\|\\<\\>\\?\\/\\;\\,\\.]", PaletteIndex::Punctuation));
+		// String Literals
+		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"("(?:\\.|[^"\\])*")", PaletteIndex::Default));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"([+-]?(0|([1-9]\d?)+)(\.\d+)?([eE][+-]?\d+)?)", PaletteIndex::Number));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("(true|false)", PaletteIndex::Number));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"(,)", PaletteIndex::Punctuation));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"([{}])", PaletteIndex::Punctuation));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"([[\]])", PaletteIndex::Punctuation));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"(:)", PaletteIndex::Punctuation));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"(.)", PaletteIndex::Punctuation));
 
-		/*langDef.mTokenize = [](const char * in_begin, const char * in_end, const char *& out_begin, const char *& out_end, PaletteIndex & paletteIndex) -> bool
-		{
-			__debugbreak();
-			paletteIndex = PaletteIndex::Max;
-
-			while (in_begin < in_end && isascii(*in_begin) && isblank(*in_begin))
-				in_begin++;
-
-			if (in_begin == in_end)
-			{
-				out_begin = in_end;
-				out_end = in_end;
-				paletteIndex = PaletteIndex::Default;
-			}
-			else if (TokenizeCStyleString(in_begin, in_end, out_begin, out_end))
-				paletteIndex = PaletteIndex::String;
-			else if (TokenizeCStyleCharacterLiteral(in_begin, in_end, out_begin, out_end))
-				paletteIndex = PaletteIndex::CharLiteral;
-			else if (TokenizeCStyleIdentifier(in_begin, in_end, out_begin, out_end))
-				paletteIndex = PaletteIndex::Identifier;
-			else if (TokenizeCStyleNumber(in_begin, in_end, out_begin, out_end))
-				paletteIndex = PaletteIndex::Number;
-			else if (TokenizeCStylePunctuation(in_begin, in_end, out_begin, out_end))
-				paletteIndex = PaletteIndex::Punctuation;
-
-			return paletteIndex != PaletteIndex::Max;
-		};*/
 
 		langDef.mCaseSensitive = true;
 		langDef.mAutoIndentation = false;
