@@ -2,7 +2,6 @@
 
 #include "WorkspaceManager.h"
 
-WorkspaceWindow s_Workspace;
 
 void WorkspaceWindow::Draw() const
 {
@@ -36,7 +35,8 @@ void WorkspaceWindow::Draw() const
     ImGui::End();
 }
 
-WorkspaceWindow& WorkspaceWindow::Get()
+WorkspaceWindow& WorkspaceWindow::Instance()
 {
-    return s_Workspace;
+    static WorkspaceWindow it;
+    return it;
 }

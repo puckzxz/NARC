@@ -11,9 +11,9 @@
 #include <chrono>
 
 using json = nlohmann::json;
-class Request
+class RequestWindow
 {
 public:
     void Draw() const;
-    static Request& Get();
+    static RequestWindow& Instance();
 };

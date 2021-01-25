@@ -15,7 +15,7 @@ bool WorkspaceManager::WriteFile()
     {
         reqs.push_back({std::string ("Request" ) + std::to_string(i)});
     }
-    Workspace cf {"Test", reqs};
+    const Workspace cf {"Test", reqs};
     Workspaces ws;
     ws.workspaces.push_back(cf);
     std::ofstream os("workspaces.narc");
@@ -58,8 +58,4 @@ const Workspaces& WorkspaceManager::GetWorkspaces()
         }
     }
     return j.get<Workspaces>();
-}
-
-WorkspaceManager::WorkspaceManager()
-{
 }

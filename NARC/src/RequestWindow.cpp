@@ -1,6 +1,6 @@
 ﻿#include "RequestWindow.h"
 
-void Request::Draw() const
+void RequestWindow::Draw() const
 {
     ImGui::Begin("Request");
     static std::array<char, 4096> requestUrlBuffer;
@@ -56,19 +56,19 @@ void Request::Draw() const
                     resp = cpr::Head(cpr::Url{requestUrl});
                 else
                     throw std::exception("Tried to send a request with no method selected");
-                ResponseWindow::Get().SetResponseHeaders(resp.header);
-                ResponseWindow::Get().SetResponseDuration(resp.elapsed);
-                ResponseWindow::Get().SetResponseCode(resp.status_code);
+                ResponseWindow::Instance().SetResponseHeaders(resp.header);
+                ResponseWindow::Instance().SetResponseDuration(resp.elapsed);
+                ResponseWindow::Instance().SetResponseCode(resp.status_code);
                 if (!resp.text.empty())
-                    ResponseWindow::Get().SetJSON(json::parse(resp.text).dump(4));
+                    ResponseWindow::Instance().SetJSON(json::parse(resp.text).dump(4));
             }
         }.detach();
     }
     ImGui::End();
 }
 
-Request& Request::Get()
+RequestWindow& RequestWindow::Instance()
 {
-    static Request s_Request;
-    return s_Request;
+    static RequestWindow it;
+    return it;
 }

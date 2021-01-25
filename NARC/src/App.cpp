@@ -109,15 +109,15 @@ void App::Run()
 
         if (m_showWorkspacePanel)
         {
-            WorkspaceWindow::Get().Draw();
+            WorkspaceWindow::Instance().Draw();
         }
         if (m_showRequestPanel)
         {
-            Request::Get().Draw();
+            RequestWindow::Instance().Draw();
         }
         if (m_showResponsePanel)
         {
-            ResponseWindow::Get().Draw();
+            ResponseWindow::Instance().Draw();
 
         }
 

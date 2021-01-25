@@ -14,7 +14,7 @@ ResponseWindow::ResponseWindow()
     s_Editor.SetShowWhitespaces(false);
 }
 
-ResponseWindow& ResponseWindow::Get()
+ResponseWindow& ResponseWindow::Instance()
 {
     static ResponseWindow it;
     return it;

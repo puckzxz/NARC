@@ -55,5 +55,5 @@ public:
     static bool DeleteFile();
     static const Workspaces& GetWorkspaces();
 private:
-    WorkspaceManager();
+    WorkspaceManager(){};
 };

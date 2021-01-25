@@ -10,7 +10,7 @@
 class ResponseWindow
 {
 public:
-    static ResponseWindow& Get();
+    static ResponseWindow& Instance();
     void Draw() const;
     void SetJSON(const std::string& data);
     void SetResponseCode(const int32_t& code);
