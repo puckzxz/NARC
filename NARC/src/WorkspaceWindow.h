@@ -6,8 +6,9 @@
 class WorkspaceWindow
 {
 public:
-    void Draw() const;
+    void Draw();
     static WorkspaceWindow& Instance();
+    void SetWorkspaces(const Workspaces& workspaces);
 private:
     WorkspaceWindow(){};
 

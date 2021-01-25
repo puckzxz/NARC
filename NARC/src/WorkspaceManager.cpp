@@ -34,7 +34,7 @@ bool WorkspaceManager::DeleteFile()
     return true;
 }
 
-const Workspaces& WorkspaceManager::GetWorkspaces()
+const Workspaces WorkspaceManager::GetWorkspaces()
 {
     if (!std::filesystem::exists("workspaces.narc"))
     {

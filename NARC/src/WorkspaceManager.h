@@ -53,7 +53,7 @@ public:
     static WorkspaceManager& Instance();
     static bool WriteFile();
     static bool DeleteFile();
-    static const Workspaces& GetWorkspaces();
+    static const Workspaces GetWorkspaces();
 private:
     WorkspaceManager(){};
 };
