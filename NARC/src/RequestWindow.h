@@ -10,10 +10,21 @@
 #include "App.h"
 #include <chrono>
 
+#include "WorkspaceManager.h"
+
 using json = nlohmann::json;
 class RequestWindow
 {
 public:
-    void Draw() const;
+    void Draw();
     static RequestWindow& Instance();
+    void SetRequest(const Request& request);
+private:
+    RequestWindow(): m_requestUrlBuffer()
+    {
+    }
+
+    Request m_currentRequest;
+    uint8_t m_requestTypeIndex = 0;
+    std::array<char, 4096> m_requestUrlBuffer;
 };

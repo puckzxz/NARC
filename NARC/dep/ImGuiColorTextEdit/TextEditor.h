@@ -181,6 +181,7 @@ public:
 		static const LanguageDefinition& AngelScript();
 		static const LanguageDefinition& Lua();
 		static const LanguageDefinition& JSON();
+		static const LanguageDefinition& NONE();
 	};
 
 	TextEditor();

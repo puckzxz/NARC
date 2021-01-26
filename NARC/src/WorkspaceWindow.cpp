@@ -28,13 +28,9 @@ void WorkspaceWindow::Draw()
     {
         WorkspaceManager::DeleteFile();
     }
-    if (ImGui::Button("Read File"))
-    {
-        WorkspaceManager::GetWorkspaces();
-    }
     if (ImGui::Button("Load Workspaces"))
     {
-        m_workspaces = WorkspaceManager::GetWorkspaces();
+        m_workspaces = WorkspaceManager::Instance().GetWorkspaces();
     }
     for (const auto& w : m_workspaces.workspaces)
     {

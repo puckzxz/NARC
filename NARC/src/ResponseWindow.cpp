@@ -4,11 +4,8 @@
 
 TextEditor s_Editor;
 
-ResponseWindow::ResponseWindow()
+ResponseWindow::ResponseWindow(): m_response()
 {
-    m_responseCode = 0;
-    m_jsonResponse = "";
-    m_responseDuration = 0;
     s_Editor.SetReadOnly(true);
     s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     s_Editor.SetShowWhitespaces(false);
@@ -23,20 +20,20 @@ ResponseWindow& ResponseWindow::Instance()
 void ResponseWindow::Draw() const
 {
     ImGui::Begin("Response");
-    if (m_responseCode >= 100 && m_responseCode <= 199)
-        ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_responseCode);
-    if (m_responseCode >= 200 && m_responseCode <= 299)
-        ImGui::TextColored({ 0, 255, 0, 1 }, "%d", m_responseCode);
-    if (m_responseCode >= 300 && m_responseCode <= 399)
-        ImGui::TextColored({ 255, 255, 0, 1 }, "%d", m_responseCode);
-    if (m_responseCode >= 400 && m_responseCode <= 499)
-        ImGui::TextColored({ 255, 165, 0, 1 }, "%d", m_responseCode);
-    if (m_responseCode >= 500 && m_responseCode <= 599)
-        ImGui::TextColored({ 255, 0, 0, 1 }, "%d", m_responseCode);
-    if (m_responseDuration != 0)
+    if (m_response.status_code >= 100 && m_response.status_code <= 199)
+        ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_response.status_code);
+    if (m_response.status_code >= 200 && m_response.status_code <= 299)
+        ImGui::TextColored({ 0, 255, 0, 1 }, "%d", m_response.status_code);
+    if (m_response.status_code >= 300 && m_response.status_code <= 399)
+        ImGui::TextColored({ 255, 255, 0, 1 }, "%d", m_response.status_code);
+    if (m_response.status_code >= 400 && m_response.status_code <= 499)
+        ImGui::TextColored({ 255, 165, 0, 1 }, "%d", m_response.status_code);
+    if (m_response.status_code >= 500 && m_response.status_code <= 599)
+        ImGui::TextColored({ 255, 0, 0, 1 }, "%d", m_response.status_code);
+    if (m_response.elapsed != 0)
     {
         ImGui::SameLine();
-        ImGui::Text("%.3f", m_responseDuration);
+        ImGui::Text("%.2f ms", m_response.elapsed * 1000);
     }
     ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
     if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
@@ -50,7 +47,23 @@ void ResponseWindow::Draw() const
         {
             if (ImGui::BeginTable("##Headers", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
             {
-                for (const auto& [name, value] : m_responseHeaders)
+                for (const auto& [name, value] : m_response.header)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    ImGui::Text(name.c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::TextWrapped(value.c_str());
+                }
+                ImGui::EndTable();
+            }
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Cookies"))
+        {
+            if (ImGui::BeginTable("##Cookies", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
+            {
+                for (const auto& [name, value] : m_response.cookies)
                 {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -67,23 +80,17 @@ void ResponseWindow::Draw() const
     ImGui::End();
 }
 
-void ResponseWindow::SetJSON(const std::string& data)
+void ResponseWindow::SetResponse(const cpr::Response& resp)
 {
-    m_jsonResponse = data;
-    s_Editor.SetText(m_jsonResponse);
-}
-
-void ResponseWindow::SetResponseCode(const int32_t& code)
-{
-    m_responseCode = code;
-}
-
-void ResponseWindow::SetResponseDuration(const double& time)
-{
-    m_responseDuration = time;
-}
-
-void ResponseWindow::SetResponseHeaders(const cpr::Header& headers)
-{
-    m_responseHeaders = headers;
+    m_response = resp;
+    if (json::accept(resp.text))
+    {
+        s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
+        s_Editor.SetText(json::parse(resp.text).dump(4));
+    }
+    else
+    {
+        s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::NONE());
+        s_Editor.SetText(resp.text);
+    }
 }

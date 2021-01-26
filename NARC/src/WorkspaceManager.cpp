@@ -1,7 +1,5 @@
 #include "WorkspaceManager.h"
 
-#include <ranges>
-
 WorkspaceManager& WorkspaceManager::Instance()
 {
     static WorkspaceManager it;
@@ -13,7 +11,7 @@ bool WorkspaceManager::WriteFile()
     std::vector<Request> reqs;
     for (int i = 1; i < 5; i++)
     {
-        reqs.push_back({std::string ("Request" ) + std::to_string(i)});
+        reqs.push_back({std::string ("Request" ) + std::to_string(i), std::string("GET")});
     }
     const Workspace cf {"Test", reqs};
     Workspaces ws;
@@ -34,7 +32,7 @@ bool WorkspaceManager::DeleteFile()
     return true;
 }
 
-const Workspaces WorkspaceManager::GetWorkspaces()
+Workspaces WorkspaceManager::GetWorkspaces() const
 {
     if (!std::filesystem::exists("workspaces.narc"))
     {

@@ -3220,3 +3220,20 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::JSON()
 	}
 	return langDef;
 }
+
+const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::NONE()
+{
+	static bool inited = false;
+	static LanguageDefinition langDef;
+
+	if (!inited)
+	{
+		langDef.mCaseSensitive = true;
+		langDef.mAutoIndentation = false;
+
+		langDef.mName = "None";
+
+		inited = true;
+	}
+	return langDef;
+}

@@ -12,6 +12,7 @@ using json = nlohmann::json;
 struct Request
 {
     std::string name;
+    std::string type;
     // static void to_json(json& j, const Request& r) {
     //     j = json{{"name", r.name}};
     // }
@@ -19,7 +20,7 @@ struct Request
     // static void from_json(const json& j, Request& r) {
     //     j.at("name").get_to(r.name);
     // }
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Request, name);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Request, name, type);
 };
 
 struct Workspace
@@ -53,7 +54,7 @@ public:
     static WorkspaceManager& Instance();
     static bool WriteFile();
     static bool DeleteFile();
-    static const Workspaces GetWorkspaces();
+    Workspaces GetWorkspaces() const;
 private:
     WorkspaceManager(){};
 };

@@ -1,23 +1,22 @@
 ﻿#include "RequestWindow.h"
 
-void RequestWindow::Draw() const
+void RequestWindow::Draw()
 {
     ImGui::Begin("Request");
-    static std::array<char, 4096> requestUrlBuffer;
-    static auto requestTypeIndex = 0;
+    // static std::array<char, 4096> requestUrlBuffer;
     static const std::array<std::string, 7> requestTypes = {
         "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"
     };
-    static std::string requestName = requestTypes[requestTypeIndex];
+    static std::string requestName = requestTypes[m_requestTypeIndex];
     ImGui::PushItemWidth(-FLT_MIN);
-    if (ImGui::BeginCombo("###RequestType", requestTypes.at(requestTypeIndex).c_str()))
+    if (ImGui::BeginCombo("###RequestType", requestTypes.at(m_requestTypeIndex).c_str()))
     {
         for (auto i = 0; i < requestTypes.size(); i++)
         {
-            const auto is_selected = (requestTypeIndex == i);
+            const auto is_selected = (m_requestTypeIndex == i);
             if (ImGui::Selectable(requestTypes.at(i).c_str()))
             {
-                requestTypeIndex = i;
+                m_requestTypeIndex = i;
                 requestName = requestTypes[i];
             }
             if (is_selected)
@@ -27,14 +26,14 @@ void RequestWindow::Draw() const
         }
         ImGui::EndCombo();
     }
-    ImGui::InputText("###RequestURL", requestUrlBuffer.data(), requestUrlBuffer.size());
+    ImGui::InputText("###RequestURL", m_requestUrlBuffer.data(), m_requestUrlBuffer.size());
     ImGui::PopItemWidth();
     if (ImGui::Button("Send"))
     {
         std::thread{
             [&]() -> void
             {
-                const std::string requestUrl = requestUrlBuffer.data();
+                const std::string requestUrl = m_requestUrlBuffer.data();
                 if (requestUrl.length() <= 0)
                 {
                     return;
@@ -56,11 +55,7 @@ void RequestWindow::Draw() const
                     resp = cpr::Head(cpr::Url{requestUrl});
                 else
                     throw std::exception("Tried to send a request with no method selected");
-                ResponseWindow::Instance().SetResponseHeaders(resp.header);
-                ResponseWindow::Instance().SetResponseDuration(resp.elapsed);
-                ResponseWindow::Instance().SetResponseCode(resp.status_code);
-                if (!resp.text.empty())
-                    ResponseWindow::Instance().SetJSON(json::parse(resp.text).dump(4));
+                ResponseWindow::Instance().SetResponse(resp);
             }
         }.detach();
     }
@@ -71,4 +66,9 @@ RequestWindow& RequestWindow::Instance()
 {
     static RequestWindow it;
     return it;
+}
+
+void RequestWindow::SetRequest(const Request& request)
+{
+    m_currentRequest = request;
 }
