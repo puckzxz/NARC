@@ -1122,7 +1122,7 @@ void TextEditor::Render()
 			if (local.x >= mTextStart)
 			{
 				auto pos = ScreenPosToCoordinates(mpos);
-				printf("Coord(%d, %d)\n", pos.mLine, pos.mColumn);
+				// printf("Coord(%d, %d)\n", pos.mLine, pos.mColumn);
 				auto id = GetWordAt(pos);
 				if (!id.empty())
 				{
@@ -3388,6 +3388,64 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Lua()
 		langDef.mAutoIndentation = false;
 
 		langDef.mName = "Lua";
+
+		inited = true;
+	}
+	return langDef;
+}
+
+const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::JSON()
+{
+	static bool inited = false;
+	static LanguageDefinition langDef;
+
+	if (!inited)
+	{
+		static const char* const cppKeywords[] = {
+			"true", "false", "null"
+        };
+		for (auto& k : cppKeywords)
+		{
+			langDef.mKeywords.insert(k);
+		}
+
+		// langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"(:)", PaletteIndex::Punctuation));
+		// String Keys
+		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"("(?:\\.|[^"\\])*"(?=\s*:))", PaletteIndex::String));
+		// String Literals
+		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"("(?:\\.|[^"\\])*")", PaletteIndex::Keyword));
+		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"([+-]?(0|([1-9]\d?)+)(\.\d+)?([eE][+-]?\d+)?)", PaletteIndex::Number));
+		langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>("(true|false)", PaletteIndex::Number));
+		// langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"(,)", PaletteIndex::Punctuation));
+		// langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"([{}])", PaletteIndex::Punctuation));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"([[\]])", PaletteIndex::Punctuation));
+		//langDef.mTokenRegexStrings.push_back(std::make_pair<std::string, PaletteIndex>(R"(.)", PaletteIndex::Punctuation));
+
+
+		langDef.mCaseSensitive = true;
+		langDef.mAutoIndentation = false;
+		langDef.mCommentStart = "--[[";
+		langDef.mCommentEnd = "]]";
+		langDef.mSingleLineComment = "--";
+
+		langDef.mName = "JSON";
+
+		inited = true;
+	}
+	return langDef;
+}
+
+const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::None()
+{
+	static bool inited = false;
+	static LanguageDefinition langDef;
+
+	if (!inited)
+	{
+		langDef.mCaseSensitive = true;
+		langDef.mAutoIndentation = false;
+
+		langDef.mName = "None";
 
 		inited = true;
 	}
