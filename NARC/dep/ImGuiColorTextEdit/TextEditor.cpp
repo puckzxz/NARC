@@ -2185,7 +2185,7 @@ void TextEditor::Colorize(int aFromLine, int aLines)
 	mColorRangeMax = std::max(mColorRangeMax, toLine);
 	mColorRangeMin = std::max(0, mColorRangeMin);
 	mColorRangeMax = std::max(mColorRangeMin, mColorRangeMax);
-	mCheckComments = true;
+	mCheckComments = false;
 }
 
 void TextEditor::ColorizeRange(int aFromLine, int aToLine)
@@ -3424,9 +3424,9 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::JSON()
 
 		langDef.mCaseSensitive = true;
 		langDef.mAutoIndentation = false;
-		langDef.mCommentStart = "--[[";
-		langDef.mCommentEnd = "]]";
-		langDef.mSingleLineComment = "--";
+		langDef.mCommentStart = "";
+		langDef.mCommentEnd = "";
+		langDef.mSingleLineComment = "";
 
 		langDef.mName = "JSON";
 
@@ -3446,6 +3446,10 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::None()
 		langDef.mAutoIndentation = false;
 
 		langDef.mName = "None";
+
+		langDef.mCommentStart = "";
+		langDef.mCommentEnd = "";
+		langDef.mSingleLineComment = "";
 
 		inited = true;
 	}
