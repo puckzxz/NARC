@@ -11,7 +11,7 @@ bool WorkspaceManager::WriteFile()
     std::vector<Request> reqs;
     for (int i = 1; i < 5; i++)
     {
-        reqs.push_back({std::string ("Request" ) + std::to_string(i), std::string("GET")});
+        reqs.push_back({std::string("Request ") + std::to_string(i), std::string("GET")});
     }
     const Workspace cf {"Test", reqs};
     Workspaces ws;

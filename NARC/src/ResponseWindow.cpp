@@ -7,7 +7,7 @@ TextEditor s_Editor;
 ResponseWindow::ResponseWindow(): m_response()
 {
     s_Editor.SetReadOnly(true);
-    s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
+    s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
     s_Editor.SetShowWhitespaces(false);
 }
 

@@ -180,8 +180,6 @@ public:
 		static const LanguageDefinition& SQL();
 		static const LanguageDefinition& AngelScript();
 		static const LanguageDefinition& Lua();
-		static const LanguageDefinition& JSON();
-		static const LanguageDefinition& NONE();
 	};
 
 	TextEditor();
@@ -231,6 +229,9 @@ public:
 
 	inline void SetShowWhitespaces(bool aValue) { mShowWhitespaces = aValue; }
 	inline bool IsShowingWhitespaces() const { return mShowWhitespaces; }
+
+	inline void SetShowShortTabGlyphs(bool aValue) { mShowShortTabGlyphs = aValue; }
+	inline bool IsShowingShortTabGlyphs() const { return mShowShortTabGlyphs; }
 
 	void SetTabSize(int aValue);
 	inline int GetTabSize() const { return mTabSize; }
@@ -327,7 +328,7 @@ private:
 	void DeleteRange(const Coordinates& aStart, const Coordinates& aEnd);
 	int InsertTextAt(Coordinates& aWhere, const char* aValue);
 	void AddUndo(UndoRecord& aValue);
-	Coordinates ScreenPosToCoordinates(const ImVec2& aPosition) const;
+	Coordinates ScreenPosToCoordinates(const ImVec2& aPosition, bool aInsertionMode = false) const;
 	Coordinates FindWordStart(const Coordinates& aFrom) const;
 	Coordinates FindWordEnd(const Coordinates& aFrom) const;
 	Coordinates FindNextWord(const Coordinates& aFrom) const;
@@ -373,6 +374,7 @@ private:
 	bool mHandleMouseInputs;
 	bool mIgnoreImGuiChild;
 	bool mShowWhitespaces;
+	bool mShowShortTabGlyphs;
 
 	Palette mPaletteBase;
 	Palette mPalette;
