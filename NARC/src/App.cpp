@@ -28,7 +28,7 @@ bool App::Init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     m_appWindow = glfwCreateWindow(App::Width, App::Height, "NARC", nullptr, nullptr);
     glfwMakeContextCurrent(m_appWindow);
-    // glfwSwapInterval(1);
+    glfwSwapInterval(1);
     if (m_appWindow == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -50,7 +50,7 @@ bool App::Init()
     io.ConfigDockingTransparentPayload = true;
     ImGui::StyleColorsDark();
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowBorderSize = 0.0f;
+    // style.WindowBorderSize = 0.0f;
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
