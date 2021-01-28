@@ -45,6 +45,18 @@ void WorkspaceWindow::Draw()
             ImGui::TreePop();
         }
     }
+    if (ImGui::BeginPopupContextWindow("###CTXMENU", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
+    {
+        if (ImGui::Button("New Request"))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+        if (ImGui::Button("New Folder"))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
     ImGui::End();
 }
 
