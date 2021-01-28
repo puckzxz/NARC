@@ -1,58 +1,46 @@
 ﻿#include "RequestWindow.h"
 
+#include "misc/cpp/imgui_stdlib.h"
+#include "misc/cpp/imgui_stdlib.cpp"
+
 void RequestWindow::Draw()
 {
     ImGui::Begin("Request");
-    // static std::array<char, 4096> requestUrlBuffer;
-    static const std::array<std::string, 7> requestTypes = {
-        "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"
-    };
-    static std::string requestName = requestTypes[m_requestTypeIndex];
     ImGui::PushItemWidth(-FLT_MIN);
-    if (ImGui::BeginCombo("###RequestType", requestTypes.at(m_requestTypeIndex).c_str()))
+    if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
     {
-        for (auto i = 0; i < requestTypes.size(); i++)
+        for (auto i = 0; i < m_requestTypes.size(); i++)
         {
-            const auto is_selected = (m_requestTypeIndex == i);
-            if (ImGui::Selectable(requestTypes.at(i).c_str()))
+            if (ImGui::Selectable(m_requestTypes.at(i).c_str()))
             {
                 m_requestTypeIndex = i;
-                requestName = requestTypes[i];
-            }
-            if (is_selected)
-            {
-                ImGui::SetItemDefaultFocus();
+                m_requestName = m_requestTypes[i];
             }
         }
         ImGui::EndCombo();
     }
-    ImGui::InputText("###RequestURL", m_requestUrlBuffer.data(), m_requestUrlBuffer.size());
+    ImGui::InputText("###RequestURL", &m_requestURL);
     ImGui::PopItemWidth();
     if (ImGui::Button("Send"))
     {
         std::thread{
             [&]() -> void
             {
-                const std::string requestUrl = m_requestUrlBuffer.data();
-                if (requestUrl.length() <= 0)
-                {
-                    return;
-                }
                 cpr::Response resp;
-                if (requestName == "GET")
-                    resp = cpr::Get(cpr::Url{requestUrl});
-                else if (requestName == "POST")
-                    resp = cpr::Post(cpr::Url{requestUrl});
-                else if (requestName == "PUT")
-                    resp = cpr::Put(cpr::Url{requestUrl});
-                else if (requestName == "PATCH")
-                    resp = cpr::Patch(cpr::Url{requestUrl});
-                else if (requestName == "DELETE")
-                    resp = cpr::Delete(cpr::Url{requestUrl});
-                else if (requestName == "OPTIONS")
-                    resp = cpr::Options(cpr::Url{requestUrl});
-                else if (requestName == "HEAD")
-                    resp = cpr::Head(cpr::Url{requestUrl});
+                if (m_requestName == "GET")
+                    resp = cpr::Get(cpr::Url{m_requestURL});
+                else if (m_requestName == "POST")
+                    resp = cpr::Post(cpr::Url{m_requestURL});
+                else if (m_requestName == "PUT")
+                    resp = cpr::Put(cpr::Url{m_requestURL});
+                else if (m_requestName == "PATCH")
+                    resp = cpr::Patch(cpr::Url{m_requestURL});
+                else if (m_requestName == "DELETE")
+                    resp = cpr::Delete(cpr::Url{m_requestURL});
+                else if (m_requestName == "OPTIONS")
+                    resp = cpr::Options(cpr::Url{m_requestURL});
+                else if (m_requestName == "HEAD")
+                    resp = cpr::Head(cpr::Url{m_requestURL});
                 else
                     throw std::exception("Tried to send a request with no method selected");
                 ResponseWindow::Instance().SetResponse(resp);
@@ -71,4 +59,5 @@ RequestWindow& RequestWindow::Instance()
 void RequestWindow::SetRequest(const Request& request)
 {
     m_currentRequest = request;
+    m_requestType = request.type;
 }

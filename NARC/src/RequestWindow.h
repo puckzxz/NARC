@@ -20,11 +20,16 @@ public:
     static RequestWindow& Instance();
     void SetRequest(const Request& request);
 private:
-    RequestWindow(): m_requestUrlBuffer()
+    RequestWindow()
     {
     }
 
     Request m_currentRequest;
     uint8_t m_requestTypeIndex = 0;
-    std::array<char, 4096> m_requestUrlBuffer;
+    std::array<std::string, 7> m_requestTypes = {
+        "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"
+    };
+    std::string m_requestType;
+    std::string m_requestURL;
+    std::string m_requestName = m_requestTypes[m_requestTypeIndex];
 };
