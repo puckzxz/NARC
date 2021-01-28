@@ -1,4 +1,6 @@
 ﻿#include "App.h"
+
+#include "imgui_internal.h"
 #include "backends/imgui_impl_opengl3.cpp"
 #include "backends/imgui_impl_glfw.cpp"
 
@@ -49,8 +51,8 @@ bool App::Init()
     io.ConfigDockingWithShift = true;
     io.ConfigDockingTransparentPayload = true;
     ImGui::StyleColorsDark();
-    ImGuiStyle& style = ImGui::GetStyle();
-    // style.WindowBorderSize = 0.0f;
+    auto& style = ImGui::GetStyle();
+    style.WindowBorderSize = 0.0f;
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
@@ -72,8 +74,41 @@ void App::Run()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        ImGui::DockSpaceOverViewport();
 
+        const auto windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus |
+            ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar;
+
+        auto* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("RootWindow", nullptr, windowFlags);
+        ImGui::PopStyleVar(3);
+
+        const auto dockSpaceId = ImGui::GetID("DockSpace");
+        if (!ImGui::DockBuilderGetNode(dockSpaceId))
+        {
+            ImGui::DockBuilderAddNode(dockSpaceId, ImGuiDockNodeFlags_DockSpace);
+            ImGui::DockBuilderSetNodeSize(dockSpaceId, viewport->Size);
+
+            auto dockMainId = dockSpaceId;
+            const auto dockMiddleId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.5f, nullptr, &dockMainId);
+            const auto dockRightId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.7f, nullptr, &dockMainId);
+
+            ImGui::DockBuilderDockWindow("Workspace", dockMainId);
+            ImGui::DockBuilderDockWindow("Response", dockMiddleId);
+            ImGui::DockBuilderDockWindow("Request", dockRightId);
+
+            ImGui::DockBuilderFinish(dockMainId);
+        }
+
+        ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
         if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -102,10 +137,15 @@ void App::Run()
                 {
                     m_showDemoWindow = !m_showDemoWindow;
                 }
+                if (ImGui::MenuItem("Reset Layout"))
+                {
+                    ImGui::DockBuilderRemoveNode(dockSpaceId);
+                }
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
         }
+        ImGui::End();
 
         if (m_showWorkspacePanel)
         {
@@ -118,13 +158,12 @@ void App::Run()
         if (m_showResponsePanel)
         {
             ResponseWindow::Instance().Draw();
-
         }
-
         if (m_showDemoWindow)
         {
             ImGui::ShowDemoWindow(&m_showDemoWindow);
         }
+
         ImGui::Render();
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
