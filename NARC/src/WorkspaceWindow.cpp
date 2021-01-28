@@ -1,5 +1,7 @@
 ﻿#include "WorkspaceWindow.h"
 
+
+#include "RequestWindow.h"
 #include "WorkspaceManager.h"
 
 
@@ -24,10 +26,6 @@ void WorkspaceWindow::Draw()
     {
         WorkspaceManager::WriteFile();
     }
-    if (ImGui::Button("Delete File"))
-    {
-        WorkspaceManager::DeleteFile();
-    }
     if (ImGui::Button("Load Workspaces"))
     {
         m_workspaces = WorkspaceManager::Instance().GetWorkspaces();
@@ -40,7 +38,8 @@ void WorkspaceWindow::Draw()
             {
                 if (ImGui::Selectable(r.name.c_str()))
                 {
-                    std::cout << r.name << std::endl;
+                    std::cout << r.name << " " << r.url << std::endl;
+                    RequestWindow::Instance().SetRequest(r);
                 }
             }
             ImGui::TreePop();

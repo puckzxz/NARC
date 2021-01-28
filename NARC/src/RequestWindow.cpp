@@ -60,4 +60,5 @@ void RequestWindow::SetRequest(const Request& request)
 {
     m_currentRequest = request;
     m_requestType = request.type;
+    m_requestURL = request.url;
 }

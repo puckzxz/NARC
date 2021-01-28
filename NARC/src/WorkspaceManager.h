@@ -13,7 +13,8 @@ struct Request
 {
     std::string name;
     std::string type;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Request, name, type);
+    std::string url;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Request, name, type, url);
 };
 
 struct Workspace
@@ -34,7 +35,6 @@ class WorkspaceManager
 public:
     static WorkspaceManager& Instance();
     static bool WriteFile();
-    static bool DeleteFile();
     Workspaces GetWorkspaces() const;
 private:
     WorkspaceManager(){};

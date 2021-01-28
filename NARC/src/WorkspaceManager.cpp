@@ -11,7 +11,11 @@ bool WorkspaceManager::WriteFile()
     std::vector<Request> reqs;
     for (int i = 1; i < 5; i++)
     {
-        reqs.push_back({std::string("Request ") + std::to_string(i), std::string("GET")});
+        reqs.push_back({
+                std::string("Request ") + std::to_string(i),
+                std::string("GET"),
+                std::string("https://reqres.in/api/users/" + std::to_string(i))
+            });
     }
     const Workspace cf {"Test", reqs};
     Workspaces ws;
@@ -20,15 +24,6 @@ bool WorkspaceManager::WriteFile()
     const json j = ws;
     os << j << std::endl;
     os.close();
-    return true;
-}
-
-bool WorkspaceManager::DeleteFile()
-{
-    if (std::filesystem::exists("workspaces.narc"))
-    {
-        return std::filesystem::remove("workspaces.narc");
-    }
     return true;
 }
 
@@ -46,14 +41,5 @@ Workspaces WorkspaceManager::GetWorkspaces() const
     json j;
     is >> j;
     is.close();
-    const auto x = j.get<Workspaces>();
-    for (const auto& w : x.workspaces)
-    {
-        std::cout << w.name << std::endl;
-        for (const auto& z : w.requests)
-        {
-            std::cout << z.name << std::endl;
-        }
-    }
     return j.get<Workspaces>();
 }
