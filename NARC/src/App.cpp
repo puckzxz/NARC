@@ -25,8 +25,8 @@ App::~App()
 bool App::Init()
 {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     m_appWindow = glfwCreateWindow(App::Width, App::Height, "NARC", nullptr, nullptr);
     glfwMakeContextCurrent(m_appWindow);
@@ -52,14 +52,15 @@ bool App::Init()
     io.ConfigDockingTransparentPayload = true;
     ImGui::StyleColorsDark();
     auto& style = ImGui::GetStyle();
-    style.WindowBorderSize = 0.0f;
+    style.WindowMinSize = ImVec2(100.0f, 100.0f);
+    // style.WindowBorderSize = 0.0f;
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
     ImGui_ImplGlfw_InitForOpenGL(m_appWindow, true);
-    ImGui_ImplOpenGL3_Init("#version 460");
+    ImGui_ImplOpenGL3_Init("#version 330");
     glViewport(0, 0, App::Width, App::Height);
     glfwSetFramebufferSizeCallback(m_appWindow, framebufferCallback);
     return true;
@@ -92,6 +93,7 @@ void App::Run()
         ImGui::PopStyleVar(3);
 
         const auto dockSpaceId = ImGui::GetID("DockSpace");
+
         if (!ImGui::DockBuilderGetNode(dockSpaceId))
         {
             ImGui::DockBuilderAddNode(dockSpaceId, ImGuiDockNodeFlags_DockSpace);
@@ -163,7 +165,6 @@ void App::Run()
         {
             ImGui::ShowDemoWindow(&m_showDemoWindow);
         }
-
         ImGui::Render();
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);

@@ -18,8 +18,8 @@ public:
     ~App();
     bool Init();
     void Run();
-    inline static int Width = 1920;
-    inline static int Height = 1080;
+    inline static int Width = 1280;
+    inline static int Height = 720;
 private:
     GLFWwindow* m_appWindow;
     bool m_showDemoWindow;
