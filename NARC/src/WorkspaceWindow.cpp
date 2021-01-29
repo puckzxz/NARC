@@ -8,47 +8,43 @@
 void WorkspaceWindow::Draw()
 {
     // TODO: Fix default item, refer to Request.cpp
-    static std::string comboName = "Workspace 1";
     ImGui::Begin("Workspace");
-    if (ImGui::BeginCombo("###Workspace", comboName.c_str()))
+    if (ImGui::BeginCombo("###Workspace", m_currentWorkspace.name.c_str()))
     {
-        for (int i = 1; i < 6; i++)
+        for (const auto& w : m_workspaces.workspaces)
         {
-            std::string itemName = "Workspace " + std::to_string(i);
-            if (ImGui::Selectable(itemName.c_str()))
+            if (ImGui::Selectable(w.name.c_str()))
             {
-                comboName = itemName;
+                m_currentWorkspace = w;
             }
         }
         ImGui::EndCombo();
-    }
-    if (ImGui::Button("Write File"))
-    {
-        WorkspaceManager::WriteFile();
     }
     if (ImGui::Button("Load Workspaces"))
     {
         m_workspaces = WorkspaceManager::Instance().GetWorkspaces();
     }
-    for (const auto& w : m_workspaces.workspaces)
+    for (const auto& r : m_currentWorkspace.requests)
     {
-        if (ImGui::TreeNode(w.name.c_str()))
+        if (ImGui::Selectable(r.name.c_str()))
         {
-            for (const auto& r : w.requests)
-            {
-                if (ImGui::Selectable(r.name.c_str()))
-                {
-                    std::cout << r.name << " " << r.url << std::endl;
-                    RequestWindow::Instance().SetRequest(r);
-                }
-            }
-            ImGui::TreePop();
+            std::cout << r.name << " " << r.url << std::endl;
+            RequestWindow::Instance().SetRequest(r);
         }
+        // if (ImGui::TreeNode(w.name.c_str()))
+        // {
+        //
+        //     ImGui::TreePop();
+        // }
     }
-    if (ImGui::BeginPopupContextWindow("###CTXMENU", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
+    if (ImGui::BeginPopupContextWindow("###CTXMENU",
+                                       ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
     {
         if (ImGui::Button("New Request"))
         {
+            const Request r = {"test", "GET", "https://test.com"};
+            m_currentWorkspace.requests.push_back(r);
+            WorkspaceManager::Instance().SaveWorkspace(m_currentWorkspace);
             ImGui::CloseCurrentPopup();
         }
         if (ImGui::Button("New Folder"))

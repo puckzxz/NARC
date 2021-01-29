@@ -20,16 +20,30 @@ bool WorkspaceManager::WriteFile()
     const Workspace cf {"Test", reqs};
     Workspaces ws;
     ws.workspaces.push_back(cf);
-    std::ofstream os("workspaces.narc");
+    std::ofstream os(m_fileName);
     const json j = ws;
     os << j << std::endl;
     os.close();
     return true;
 }
 
-Workspaces WorkspaceManager::GetWorkspaces() const
+
+
+void WorkspaceManager::SaveWorkspace(const Workspace& ws)
 {
-    if (!std::filesystem::exists("workspaces.narc"))
+    for (auto& w : m_workspaces.workspaces)
+    {
+        if (w.name == ws.name)
+        {
+            w.requests = ws.requests;
+        }
+    }
+    saveWorkspaces();
+}
+
+Workspaces WorkspaceManager::GetWorkspaces()
+{
+    if (!std::filesystem::exists(m_fileName))
     {
         if (!WriteFile())
         {
@@ -37,9 +51,18 @@ Workspaces WorkspaceManager::GetWorkspaces() const
         }
         return GetWorkspaces();
     }
-    std::ifstream is("workspaces.narc");
+    std::ifstream is(m_fileName);
     json j;
     is >> j;
     is.close();
-    return j.get<Workspaces>();
+    m_workspaces = j.get<Workspaces>();
+    return m_workspaces;
+}
+
+void WorkspaceManager::saveWorkspaces()
+{
+    std::ofstream os(m_fileName);
+    const json j = m_workspaces;
+    os << j << std::endl;
+    os.close();
 }

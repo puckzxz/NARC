@@ -34,8 +34,12 @@ class WorkspaceManager
 {
 public:
     static WorkspaceManager& Instance();
-    static bool WriteFile();
-    Workspaces GetWorkspaces() const;
+    bool WriteFile();
+    void SaveWorkspace(const Workspace& ws);
+    Workspaces GetWorkspaces();
 private:
     WorkspaceManager(){};
+    Workspaces m_workspaces;
+    void saveWorkspaces();
+    std::string m_fileName = "workspaces.narc";
 };

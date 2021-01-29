@@ -10,7 +10,17 @@ public:
     static WorkspaceWindow& Instance();
     void SetWorkspaces(const Workspaces& workspaces);
 private:
-    WorkspaceWindow(){};
+    WorkspaceWindow();
 
     Workspaces m_workspaces;
+    Workspace m_currentWorkspace;
 };
+
+inline WorkspaceWindow::WorkspaceWindow()
+{
+    m_workspaces = WorkspaceManager::Instance().GetWorkspaces();
+    if (m_workspaces.workspaces.size() > 0)
+    {
+        m_currentWorkspace = m_workspaces.workspaces.front();
+    }
+}
