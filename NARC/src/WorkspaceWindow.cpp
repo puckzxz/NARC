@@ -26,7 +26,7 @@ void WorkspaceWindow::Draw()
     }
     for (const auto& r : m_currentWorkspace.requests)
     {
-        if (ImGui::Selectable(r.name.c_str()))
+        if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
         {
             std::cout << r.name << " " << r.url << std::endl;
             RequestWindow::Instance().SetRequest(r);
