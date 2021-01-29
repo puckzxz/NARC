@@ -2,6 +2,7 @@
 #include <string>
 #include "imgui.h"
 #include "WorkspaceManager.h"
+#include <algorithm>
 
 class WorkspaceWindow
 {

@@ -5,7 +5,7 @@
 
 void RequestWindow::Draw()
 {
-    ImGui::Begin("Request");
+    ImGui::Begin("Request", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
     {
@@ -42,7 +42,7 @@ void RequestWindow::Draw()
                 else if (m_requestName == "HEAD")
                     resp = cpr::Head(cpr::Url{m_requestURL});
                 else
-                    throw std::exception("Tried to send a request with no method selected");
+                    throw std::exception("Unknown REST Method");
                 ResponseWindow::Instance().SetResponse(resp);
             }
         }.detach();
