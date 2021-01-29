@@ -11,6 +11,7 @@ App::App()
     m_showWorkspacePanel = true;
     m_showRequestPanel = true;
     m_showResponsePanel = true;
+    m_settings = SettingsManager::Instance().GetSettings();
 }
 
 App::~App()
@@ -28,8 +29,13 @@ bool App::Init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    m_appWindow = glfwCreateWindow(App::Width, App::Height, "NARC", nullptr, nullptr);
+    if (m_settings.maximized)
+    {
+        glfwWindowHint(GLFW_MAXIMIZED, 1);
+    }
+    m_appWindow = glfwCreateWindow(m_settings.windowWidth, m_settings.windowHeight, "NARC", nullptr, nullptr);
     glfwMakeContextCurrent(m_appWindow);
+    glfwSetWindowSize(m_appWindow, m_settings.windowWidth, m_settings.windowHeight);
     glfwSwapInterval(1);
     if (m_appWindow == nullptr)
     {
@@ -53,7 +59,6 @@ bool App::Init()
     ImGui::StyleColorsDark();
     auto& style = ImGui::GetStyle();
     style.WindowMinSize = ImVec2(100.0f, 100.0f);
-    // style.WindowBorderSize = 0.0f;
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
@@ -61,8 +66,18 @@ bool App::Init()
     }
     ImGui_ImplGlfw_InitForOpenGL(m_appWindow, true);
     ImGui_ImplOpenGL3_Init("#version 330");
-    glViewport(0, 0, App::Width, App::Height);
+    glViewport(0, 0, m_settings.windowWidth, m_settings.windowHeight);
+    glfwSetWindowUserPointer(m_appWindow, this);
     glfwSetFramebufferSizeCallback(m_appWindow, framebufferCallback);
+    glfwSetWindowSizeCallback(m_appWindow, [](GLFWwindow* window, int width, int height) mutable
+    {
+        auto* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        app->m_settings.windowHeight = height;
+        app->m_settings.windowWidth = width;
+        const bool maximized = glfwGetWindowAttrib(window, GLFW_MAXIMIZED);
+        app->m_settings.maximized = maximized;
+        SettingsManager::Instance().SaveSettings(app->m_settings);
+    });
     return true;
 }
 
@@ -70,7 +85,7 @@ void App::Run()
 {
     while (!glfwWindowShouldClose(m_appWindow))
     {
-        glViewport(0, 0, App::Width, App::Height);
+        glViewport(0, 0, m_settings.windowWidth, m_settings.windowHeight);
         glfwPollEvents();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -100,8 +115,10 @@ void App::Run()
             ImGui::DockBuilderSetNodeSize(dockSpaceId, viewport->Size);
 
             auto dockMainId = dockSpaceId;
-            const auto dockMiddleId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.5f, nullptr, &dockMainId);
-            const auto dockRightId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.7f, nullptr, &dockMainId);
+            const auto dockMiddleId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.5f, nullptr,
+                                                                  &dockMainId);
+            const auto dockRightId =
+                ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.7f, nullptr, &dockMainId);
 
             ImGui::DockBuilderDockWindow("Workspace", dockMainId);
             ImGui::DockBuilderDockWindow("Response", dockMiddleId);
@@ -182,7 +199,5 @@ void App::Run()
 
 void App::framebufferCallback(GLFWwindow* window, const int width, const int height)
 {
-    App::Height = width;
-    App::Width = height;
     glViewport(0, 0, width, height);
 }

@@ -10,6 +10,8 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "SettingsManager.h"
+
 
 class App
 {
@@ -18,8 +20,6 @@ public:
     ~App();
     bool Init();
     void Run();
-    inline static int Width = 1280;
-    inline static int Height = 720;
 private:
     GLFWwindow* m_appWindow;
     bool m_showDemoWindow;
@@ -27,4 +27,5 @@ private:
     bool m_showRequestPanel;
     bool m_showResponsePanel;
     static void framebufferCallback(GLFWwindow* window, const int width, const int height);
+    Settings m_settings;
 };
