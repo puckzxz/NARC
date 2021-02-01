@@ -2,13 +2,11 @@
 
 #include "RequestWindow.h"
 
-TextEditor s_Editor;
-
 ResponseWindow::ResponseWindow(): m_response()
 {
-    s_Editor.SetReadOnly(true);
-    s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
-    s_Editor.SetShowWhitespaces(false);
+    m_editor.SetReadOnly(true);
+    m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
+    m_editor.SetShowWhitespaces(false);
 }
 
 ResponseWindow& ResponseWindow::Instance()
@@ -17,7 +15,7 @@ ResponseWindow& ResponseWindow::Instance()
     return it;
 }
 
-void ResponseWindow::Draw() const
+void ResponseWindow::Draw()
 {
     ImGui::Begin("Response", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     if (m_response.status_code >= 100 && m_response.status_code <= 199)
@@ -40,7 +38,7 @@ void ResponseWindow::Draw() const
     {
         if (ImGui::BeginTabItem("JSON"))
         {
-            s_Editor.Render("Text Editor");
+            this->m_editor.Render("Text Editor");
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Headers"))
@@ -85,12 +83,12 @@ void ResponseWindow::SetResponse(const cpr::Response& resp)
     m_response = resp;
     if (json::accept(resp.text))
     {
-        s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
-        s_Editor.SetText(json::parse(resp.text).dump(4));
+        m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
+        m_editor.SetText(json::parse(resp.text).dump(4));
     }
     else
     {
-        s_Editor.SetLanguageDefinition(TextEditor::LanguageDefinition::None());
-        s_Editor.SetText(resp.text);
+        m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::None());
+        m_editor.SetText(resp.text);
     }
 }

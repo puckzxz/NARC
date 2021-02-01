@@ -3,6 +3,12 @@
 #include "misc/cpp/imgui_stdlib.h"
 #include "misc/cpp/imgui_stdlib.cpp"
 
+RequestWindow::RequestWindow()
+{
+    m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
+    m_editor.SetShowWhitespaces(false);
+}
+
 void RequestWindow::Draw()
 {
     ImGui::Begin("Request", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
@@ -47,6 +53,16 @@ void RequestWindow::Draw()
             }
         }.detach();
     }
+    ImGui::SameLine();
+    if (ImGui::Button("Format"))
+    {
+        const auto text = m_editor.GetText();
+        if (json::accept(text))
+        {
+            m_editor.SetText(json::parse(text).dump(4));
+        }
+    }
+    m_editor.Render("Request Editor");
     ImGui::End();
 }
 

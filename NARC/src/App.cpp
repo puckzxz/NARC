@@ -67,8 +67,8 @@ bool App::Init()
     ImGui_ImplGlfw_InitForOpenGL(m_appWindow, true);
     ImGui_ImplOpenGL3_Init("#version 330");
     glViewport(0, 0, m_settings.windowWidth, m_settings.windowHeight);
-    glfwSetWindowUserPointer(m_appWindow, this);
     glfwSetFramebufferSizeCallback(m_appWindow, framebufferCallback);
+    glfwSetWindowUserPointer(m_appWindow, this);
     glfwSetWindowSizeCallback(m_appWindow, [](GLFWwindow* window, int width, int height) mutable
     {
         auto* app = static_cast<App*>(glfwGetWindowUserPointer(window));

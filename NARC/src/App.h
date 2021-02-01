@@ -12,7 +12,6 @@
 
 #include "SettingsManager.h"
 
-
 class App
 {
 public:
