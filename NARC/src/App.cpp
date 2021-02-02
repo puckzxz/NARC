@@ -4,14 +4,13 @@
 #include "backends/imgui_impl_opengl3.cpp"
 #include "backends/imgui_impl_glfw.cpp"
 
-App::App()
+App::App(): m_settings()
 {
     m_appWindow = nullptr;
     m_showDemoWindow = false;
     m_showWorkspacePanel = true;
     m_showRequestPanel = true;
     m_showResponsePanel = true;
-    m_settings = SettingsManager::Instance().GetSettings();
 }
 
 App::~App()
@@ -29,6 +28,7 @@ bool App::Init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    m_settings = SettingsManager::Instance().GetSettings();
     if (m_settings.maximized)
     {
         glfwWindowHint(GLFW_MAXIMIZED, 1);
@@ -78,6 +78,11 @@ bool App::Init()
         app->m_settings.maximized = maximized;
         SettingsManager::Instance().SaveSettings(app->m_settings);
     });
+    if (!ix::initNetSystem())
+    {
+        std::cout << "Failed to init WebSockets" << std::endl;
+        return false;
+    }
     return true;
 }
 

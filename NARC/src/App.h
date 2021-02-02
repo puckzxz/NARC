@@ -12,6 +12,9 @@
 
 #include "SettingsManager.h"
 
+#include "ixwebsocket/IXWebSocket.h"
+#include "ixwebsocket/IXNetSystem.h"
+
 class App
 {
 public:
