@@ -26,7 +26,6 @@ void WorkspaceWindow::Draw()
     {
         if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
         {
-            std::cout << r.name << " " << r.url << std::endl;
             RequestWindow::Instance().SetRequest(r);
         }
         // if (ImGui::TreeNode(w.name.c_str()))
@@ -57,10 +56,6 @@ void WorkspaceWindow::Draw()
             ImGui::CloseCurrentPopup();
             showPopup = true;
         }
-        // const Request r = {"test", "GET", "https://test.com"};
-        // m_currentWorkspace.requests.push_back(r);
-        // WorkspaceManager::Instance().SaveWorkspace(m_currentWorkspace);
-        // ImGui::CloseCurrentPopup();
         if (ImGui::Button("New Folder"))
         {
             ImGui::CloseCurrentPopup();
