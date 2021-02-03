@@ -8,9 +8,10 @@ App::App(): m_settings()
 {
     m_appWindow = nullptr;
     m_showDemoWindow = false;
-    m_showWorkspacePanel = true;
-    m_showRequestPanel = true;
-    m_showResponsePanel = true;
+    m_showWorkspaceWindow = true;
+    m_showRequestWindow = true;
+    m_showResponseWindow = true;
+    m_showWebSocketWindow = false;
 }
 
 App::~App()
@@ -24,6 +25,7 @@ App::~App()
 
 bool App::Init()
 {
+    FreeConsole();
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -147,19 +149,23 @@ void App::Run()
             {
                 if (ImGui::MenuItem("Toggle Workspace Panel"))
                 {
-                    m_showWorkspacePanel = !m_showWorkspacePanel;
+                    m_showWorkspaceWindow = !m_showWorkspaceWindow;
                 }
                 if (ImGui::MenuItem("Toggle Request Panel"))
                 {
-                    m_showRequestPanel = !m_showRequestPanel;
+                    m_showRequestWindow = !m_showRequestWindow;
                 }
                 if (ImGui::MenuItem("Toggle Response Panel"))
                 {
-                    m_showResponsePanel = !m_showResponsePanel;
+                    m_showResponseWindow = !m_showResponseWindow;
                 }
                 if (ImGui::MenuItem("Toggle Demo Window"))
                 {
                     m_showDemoWindow = !m_showDemoWindow;
+                }
+                if (ImGui::MenuItem("Toggle WebSocket Window"))
+                {
+                    m_showWebSocketWindow = !m_showWebSocketWindow;
                 }
                 if (ImGui::MenuItem("Reset Layout"))
                 {
@@ -171,22 +177,21 @@ void App::Run()
         }
         ImGui::End();
 
-        if (m_showWorkspacePanel)
-        {
+        if (m_showWorkspaceWindow)
             WorkspaceWindow::Instance().Draw();
-        }
-        if (m_showRequestPanel)
-        {
+
+        if (m_showRequestWindow)
             RequestWindow::Instance().Draw();
-        }
-        if (m_showResponsePanel)
-        {
+
+        if (m_showResponseWindow)
             ResponseWindow::Instance().Draw();
-        }
+
         if (m_showDemoWindow)
-        {
             ImGui::ShowDemoWindow(&m_showDemoWindow);
-        }
+
+        if (m_showWebSocketWindow)
+            WebsocketWindow::Instance().Draw();
+
         ImGui::Render();
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);

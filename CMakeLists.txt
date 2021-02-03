@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-set(CMAKE_TOOLCHAIN_FILE ./vcpkg/scripts/buildsystems/vcpkg.cmake)
+set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,12 +24,8 @@ target_link_libraries(NARC PRIVATE cpr)
 find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(NARC PRIVATE nlohmann_json nlohmann_json::nlohmann_json)
 
-# find_package(share CONFIG REQUIRED)
-# target_link_libraries(NARC PRIVATE ixwebsocket::ixwebsocket)
-find_path(IXWEBSOCKET_INCLUDE_DIR ixwebsocket/IXWebSocket.h)
-find_library(IXWEBSOCKET_LIBRARY ixwebsocket)
-include_directories(${IXWEBSOCKET_INCLUDE_DIR})
-target_link_libraries(NARC PRIVATE ${IXWEBSOCKET_LIBRARY})
+find_package(ixwebsocket CONFIG REQUIRED)
+target_link_libraries(NARC PRIVATE ixwebsocket::ixwebsocket)
 
 add_subdirectory(NARC/dep/glad)
 target_link_libraries(NARC PRIVATE glad)
