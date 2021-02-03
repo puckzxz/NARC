@@ -1,16 +1,30 @@
 @echo off
 
-git clone https://github.com/microsoft/vcpkg.git
+IF NOT EXIST vcpkg (
+    git clone https://github.com/microsoft/vcpkg.git
+)
 
-pushd vcpkg
 
-call bootstrap-vcpkg.bat
+PUSHD vcpkg
 
-call vcpkg.exe install glfw3:x64-windows
-call vcpkg.exe install cpr:x64-windows
-call vcpkg.exe install nlohmann-json:x64-windows
-call vcpkg.exe install ixwebsocket:x64-windows
+IF NOT EXIST vcpkg.exe (
+    CALL bootstrap-vcpkg.bat
+)
 
-move installed\x64-windows\share\ixwebsocket-config.cmake installed\x64-windows\share\ixwebsocket\ixwebsocket-config.cmake
-move installed\x64-windows\share\ixwebsocket-config-release.cmake installed\x64-windows\share\ixwebsocket\ixwebsocket-config-release.cmake
-move installed\x64-windows\share\ixwebsocket-config-debug.cmake installed\x64-windows\share\ixwebsocket\ixwebsocket-config-debug.cmake
+
+CALL vcpkg.exe install glfw3:x64-windows
+CALL vcpkg.exe install cpr:x64-windows
+CALL vcpkg.exe install nlohmann-json:x64-windows
+CALL vcpkg.exe install ixwebsocket:x64-windows
+
+PUSHD installed\x64-windows\share
+
+IF EXIST ixwebsocket-config.cmake (
+    MOVE ixwebsocket-config.cmake ixwebsocket\ixwebsocket-config.cmake
+)
+IF EXIST ixwebsocket-config-release.cmake (
+    MOVE ixwebsocket-config-release.cmake ixwebsocket\ixwebsocket-config-release.cmake
+)
+IF EXIST ixwebsocket-config-debug.cmake (
+    MOVE ixwebsocket-config-debug.cmake ixwebsocket\ixwebsocket-config-debug.cmake
+)
