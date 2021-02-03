@@ -35,6 +35,8 @@ void WebsocketWindow::Draw()
         m_messages.push_back("[SENT] " + webSocketMsg);
     }
 
+    ImGui::SameLine();
+
     if (!m_connected)
     {
         if (ImGui::Button("Connect"))
