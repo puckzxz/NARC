@@ -31,6 +31,6 @@ jobs:
     - name: Upload Portable ZIP
       uses: actions/upload-artifact@v2
       with:
-        name: Windows Portable ZIP
+        name: NARC-win-x64-portable
         path: |
           build/Release/*
