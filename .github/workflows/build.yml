@@ -10,18 +10,30 @@ env:
 jobs:
   win64:
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v2
     
     - name: Install MSBuild
       uses: microsoft/setup-msbuild@v1.0.2
       
-    - name: Install Dependencies
-      shell: powershell
-      run: ".\\install-deps.bat"
+    - name: Install vcpkg
+      uses: lukka/run-vcpkg@v6.2
+      with:
+        setupOnly: true
 
-    - name: Configure CMake
+    - name: Install Dependencies
+      shell: cmd
+      run: |
+        pushd vcpkg
+        call vcpkg.exe install glfw3:x64-windows
+        call vcpkg.exe install cpr:x64-windows
+        call vcpkg.exe install nlohmann-json:x64-windows
+        call vcpkg.exe install ixwebsocket:x64-windows
+        move installed\x64-windows\share\ixwebsocket-config.cmake installed\x64-windows\share\ixwebsocket\ixwebsocket-config.cmake
+        move installed\x64-windows\share\ixwebsocket-config-release.cmake installed\x64-windows\share\ixwebsocket\ixwebsocket-config-release.cmake
+        move installed\x64-windows\share\ixwebsocket-config-debug.cmake installed\x64-windows\share\ixwebsocket\ixwebsocket-config-debug.cmake
+
+    - name: Run CMake
       shell: powershell
       run: ".\\cmake.bat"
 
