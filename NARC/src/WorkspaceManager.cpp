@@ -8,16 +8,8 @@ WorkspaceManager& WorkspaceManager::Instance()
 
 bool WorkspaceManager::WriteFile()
 {
-    std::vector<Request> reqs;
-    for (int i = 1; i < 5; i++)
-    {
-        reqs.push_back({
-                std::string("Request ") + std::to_string(i),
-                std::string("GET"),
-                std::string("https://reqres.in/api/users/" + std::to_string(i))
-            });
-    }
-    const Workspace cf {"Test", reqs};
+    std::vector<Request> reqs = {};
+    const Workspace cf {"Default", reqs};
     Workspaces ws;
     ws.workspaces.push_back(cf);
     std::ofstream os(m_fileName);
