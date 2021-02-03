@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  win64:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Install Dependencies
+      shell: powershell
+      run: ".\\install.bat"
+
+    - name: Configure CMake
+      shell: powershell
+      run: ".\\build.bat"
+
+    - name: Build
+      run: msbuild /m /p:Configuration=${{env.BUILD_TYPE}} build/NARC.sln
+      
+    - name: Upload Portable ZIP
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows Portable ZIP
+        path: |
+          build/Release/*
