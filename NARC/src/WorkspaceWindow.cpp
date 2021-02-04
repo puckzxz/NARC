@@ -11,6 +11,7 @@ void WorkspaceWindow::Draw()
 {
     // TODO: Fix default item, refer to Request.cpp
     ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###Workspace", m_currentWorkspace.name.c_str()))
     {
         for (const auto& w : m_workspaces.workspaces)
@@ -22,6 +23,7 @@ void WorkspaceWindow::Draw()
         }
         ImGui::EndCombo();
     }
+    ImGui::PopItemWidth();
     for (const auto& r : m_currentWorkspace.requests)
     {
         if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
