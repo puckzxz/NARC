@@ -147,26 +147,11 @@ void App::Run()
             }
             if (ImGui::BeginMenu("View"))
             {
-                if (ImGui::MenuItem("Toggle Workspace Panel"))
-                {
-                    m_showWorkspaceWindow = !m_showWorkspaceWindow;
-                }
-                if (ImGui::MenuItem("Toggle Request Panel"))
-                {
-                    m_showRequestWindow = !m_showRequestWindow;
-                }
-                if (ImGui::MenuItem("Toggle Response Panel"))
-                {
-                    m_showResponseWindow = !m_showResponseWindow;
-                }
-                if (ImGui::MenuItem("Toggle Demo Window"))
-                {
-                    m_showDemoWindow = !m_showDemoWindow;
-                }
-                if (ImGui::MenuItem("Toggle WebSocket Window"))
-                {
-                    m_showWebSocketWindow = !m_showWebSocketWindow;
-                }
+                ImGui::MenuItem("Workspace Window", nullptr, &m_showWorkspaceWindow);
+                ImGui::MenuItem("Request Window", nullptr, &m_showRequestWindow);
+                ImGui::MenuItem("Response Window", nullptr, &m_showResponseWindow);
+                ImGui::MenuItem("Demo Window", nullptr, &m_showDemoWindow);
+                ImGui::MenuItem("WebSocket Window", nullptr, &m_showWebSocketWindow);
                 if (ImGui::MenuItem("Reset Layout"))
                 {
                     ImGui::DockBuilderRemoveNode(dockSpaceId);
