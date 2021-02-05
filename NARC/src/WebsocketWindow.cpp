@@ -29,14 +29,7 @@ void WebsocketWindow::Draw()
 
     ImGui::InputText("###WSMSG", &webSocketMsg);
 
-    if (ImGui::Button("Send"))
-    {
-        m_webSocket.send(webSocketMsg);
-        m_messages.push_back("[SENT] " + webSocketMsg);
-    }
-
-    ImGui::SameLine();
-
+    
     if (!m_connected)
     {
         if (ImGui::Button("Connect"))
@@ -66,6 +59,16 @@ void WebsocketWindow::Draw()
             m_messages.push_back("[DISCONNECTED]");
             m_connected = false;
         }
+    }
+
+    if (m_connected)
+    {
+        if (ImGui::Button("Send") && !webSocketMsg.empty())
+        {
+            m_webSocket.send(webSocketMsg);
+            m_messages.push_back("[SENT] " + webSocketMsg);
+        }
+        ImGui::SameLine();
     }
 
     ImGui::SameLine();
