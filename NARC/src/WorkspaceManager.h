@@ -17,11 +17,20 @@ struct Request
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Request, name, type, url);
 };
 
+struct Folder
+{
+    std::string name;
+    std::vector<Folder> folders;
+    std::vector<Request> requests;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Folder, name, folders, requests);
+};
+
 struct Workspace
 {
     std::string name;
     std::vector<Request> requests;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Workspace, name, requests);
+    std::vector<Folder> folders;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Workspace, name, requests, folders);
 };
 
 struct Workspaces

@@ -9,7 +9,7 @@ WorkspaceManager& WorkspaceManager::Instance()
 bool WorkspaceManager::WriteFile()
 {
     std::vector<Request> reqs = {};
-    const Workspace cf {"Default", reqs};
+    const Workspace cf{"Default", reqs};
     Workspaces ws;
     ws.workspaces.push_back(cf);
     std::ofstream os(m_fileName);
@@ -18,8 +18,6 @@ bool WorkspaceManager::WriteFile()
     os.close();
     return true;
 }
-
-
 
 void WorkspaceManager::SaveWorkspace(const Workspace& ws)
 {

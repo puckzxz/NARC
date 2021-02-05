@@ -24,17 +24,19 @@ void WorkspaceWindow::Draw()
         ImGui::EndCombo();
     }
     ImGui::PopItemWidth();
+    if (ImGui::BeginPopupContextItem("###WorkspaceComboCTX"))
+    {
+        if (ImGui::Button("New Workspace"))
+        {
+            // TODO: Create new workspace
+        }
+    }
     for (const auto& r : m_currentWorkspace.requests)
     {
         if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
         {
             RequestWindow::Instance().SetRequest(r);
         }
-        // if (ImGui::TreeNode(w.name.c_str()))
-        // {
-        //
-        //     ImGui::TreePop();
-        // }
         if (ImGui::BeginPopupContextItem())
         {
             if (ImGui::Button("Delete"))
@@ -49,14 +51,14 @@ void WorkspaceWindow::Draw()
             ImGui::EndPopup();
         }
     }
-    static bool showPopup = false;
+    static bool showAddRequestPopup = false;
     if (ImGui::BeginPopupContextWindow("Workspace",
                                        ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
     {
         if (ImGui::Button("New Request"))
         {
             ImGui::CloseCurrentPopup();
-            showPopup = true;
+            showAddRequestPopup = true;
         }
         if (ImGui::Button("New Folder"))
         {
@@ -65,14 +67,13 @@ void WorkspaceWindow::Draw()
         ImGui::EndPopup();
     }
     // TODO: Cleanup
-    if (showPopup)
+    if (showAddRequestPopup)
     {
         ImGui::OpenPopup("Add a new request");
-        showPopup = false;
+        showAddRequestPopup = false;
     }
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
     if (ImGui::BeginPopupModal("Add a new request", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         static uint8_t m_requestTypeIndex = 0;
