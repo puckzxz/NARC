@@ -11,7 +11,7 @@ RequestWindow::RequestWindow()
 
 void RequestWindow::Draw()
 {
-    ImGui::Begin("Request", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Request", &App::RequestWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
     {
@@ -34,19 +34,22 @@ void RequestWindow::Draw()
             {
                 cpr::Response resp;
                 if (m_requestName == "GET")
-                    resp = cpr::Get(cpr::Url{m_requestURL});
+                    resp = cpr::Get(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "POST")
-                    resp = cpr::Post(cpr::Url{m_requestURL});
+                    // TODO: Change this to inputs
+                    resp = cpr::Post(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()}, cpr::Header{
+                                         {"Content-Type", "application/json"}
+                                     });
                 else if (m_requestName == "PUT")
-                    resp = cpr::Put(cpr::Url{m_requestURL});
+                    resp = cpr::Put(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "PATCH")
-                    resp = cpr::Patch(cpr::Url{m_requestURL});
+                    resp = cpr::Patch(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "DELETE")
-                    resp = cpr::Delete(cpr::Url{m_requestURL});
+                    resp = cpr::Delete(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "OPTIONS")
-                    resp = cpr::Options(cpr::Url{m_requestURL});
+                    resp = cpr::Options(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "HEAD")
-                    resp = cpr::Head(cpr::Url{m_requestURL});
+                    resp = cpr::Head(cpr::Url{m_requestURL}), cpr::Body{m_editor.GetText()};
                 else
                     throw std::exception("Unknown REST Method");
                 ResponseWindow::Instance().SetResponse(resp);

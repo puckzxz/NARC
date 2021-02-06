@@ -24,13 +24,13 @@ public:
     ~App();
     bool Init();
     void Run();
+    inline static bool DemoWindowVisible;
+    inline static bool WorkspaceWindowVisible;
+    inline static bool RequestWindowVisible;
+    inline static bool ResponseWindowVisible;
+    inline static bool WebSocketWindowVisible;
 private:
     GLFWwindow* m_appWindow;
-    bool m_showDemoWindow;
-    bool m_showWorkspaceWindow;
-    bool m_showRequestWindow;
-    bool m_showResponseWindow;
-    bool m_showWebSocketWindow;
     static void framebufferCallback(GLFWwindow* window, const int width, const int height);
     Settings m_settings;
 };

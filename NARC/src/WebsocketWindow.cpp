@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+
+#include "App.h"
 #include "imgui.h"
 
 #include "misc/cpp/imgui_stdlib.h"
@@ -19,7 +21,7 @@ WebsocketWindow::WebsocketWindow()
 
 void WebsocketWindow::Draw()
 {
-    ImGui::Begin("WebSocket");
+    ImGui::Begin("WebSocket", &App::WebSocketWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
 
     static std::string webSocketURL = "wss://echo.websocket.org";
 

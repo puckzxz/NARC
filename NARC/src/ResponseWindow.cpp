@@ -17,7 +17,7 @@ ResponseWindow& ResponseWindow::Instance()
 
 void ResponseWindow::Draw()
 {
-    ImGui::Begin("Response", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Response", &App::ResponseWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
     if (m_response.status_code >= 100 && m_response.status_code <= 199)
         ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_response.status_code);
     if (m_response.status_code >= 200 && m_response.status_code <= 299)

@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include <string>
 #include <iomanip>
+#include "App.h"
 
 #include "cpr/cpr.h"
 

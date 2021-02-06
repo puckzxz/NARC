@@ -7,11 +7,11 @@
 App::App(): m_settings()
 {
     m_appWindow = nullptr;
-    m_showDemoWindow = false;
-    m_showWorkspaceWindow = true;
-    m_showRequestWindow = true;
-    m_showResponseWindow = true;
-    m_showWebSocketWindow = false;
+    DemoWindowVisible = false;
+    WorkspaceWindowVisible = true;
+    RequestWindowVisible = true;
+    ResponseWindowVisible = true;
+    WebSocketWindowVisible = true;
 }
 
 App::~App()
@@ -147,11 +147,11 @@ void App::Run()
             }
             if (ImGui::BeginMenu("View"))
             {
-                ImGui::MenuItem("Workspace Window", nullptr, &m_showWorkspaceWindow);
-                ImGui::MenuItem("Request Window", nullptr, &m_showRequestWindow);
-                ImGui::MenuItem("Response Window", nullptr, &m_showResponseWindow);
-                ImGui::MenuItem("Demo Window", nullptr, &m_showDemoWindow);
-                ImGui::MenuItem("WebSocket Window", nullptr, &m_showWebSocketWindow);
+                ImGui::MenuItem("Workspace Window", nullptr, &WorkspaceWindowVisible);
+                ImGui::MenuItem("Request Window", nullptr, &RequestWindowVisible);
+                ImGui::MenuItem("Response Window", nullptr, &ResponseWindowVisible);
+                ImGui::MenuItem("WebSocket Window", nullptr, &WebSocketWindowVisible);
+                ImGui::MenuItem("Demo Window", nullptr, &DemoWindowVisible);
                 if (ImGui::MenuItem("Reset Layout"))
                 {
                     ImGui::DockBuilderRemoveNode(dockSpaceId);
@@ -162,19 +162,19 @@ void App::Run()
         }
         ImGui::End();
 
-        if (m_showWorkspaceWindow)
+        if (WorkspaceWindowVisible)
             WorkspaceWindow::Instance().Draw();
-
-        if (m_showRequestWindow)
+        
+        if (RequestWindowVisible)
             RequestWindow::Instance().Draw();
-
-        if (m_showResponseWindow)
+        
+        if (ResponseWindowVisible)
             ResponseWindow::Instance().Draw();
-
-        if (m_showDemoWindow)
-            ImGui::ShowDemoWindow(&m_showDemoWindow);
-
-        if (m_showWebSocketWindow)
+        
+        if (DemoWindowVisible)
+            ImGui::ShowDemoWindow(&DemoWindowVisible);
+        
+        if (WebSocketWindowVisible)
             WebsocketWindow::Instance().Draw();
 
         ImGui::Render();

@@ -10,7 +10,7 @@
 void WorkspaceWindow::Draw()
 {
     // TODO: Fix default item, refer to Request.cpp
-    ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Workspace", &App::WorkspaceWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###Workspace", m_currentWorkspace.name.c_str()))
     {
