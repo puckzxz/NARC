@@ -25,7 +25,7 @@ void WorkspaceManager::SaveWorkspace(const Workspace& ws)
     {
         if (w.name == ws.name)
         {
-            w.requests = ws.requests;
+            w = ws;
         }
     }
     saveWorkspaces();

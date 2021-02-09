@@ -52,6 +52,7 @@ void WorkspaceWindow::Draw()
         }
     }
     static bool showAddRequestPopup = false;
+    static bool showAddFolderPopup = false;
     if (ImGui::BeginPopupContextWindow("Workspace",
                                        ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
     {
@@ -63,6 +64,7 @@ void WorkspaceWindow::Draw()
         if (ImGui::Button("New Folder"))
         {
             ImGui::CloseCurrentPopup();
+            showAddFolderPopup = true;
         }
         ImGui::EndPopup();
     }
@@ -71,6 +73,11 @@ void WorkspaceWindow::Draw()
     {
         ImGui::OpenPopup("Add a new request");
         showAddRequestPopup = false;
+    }
+    if (showAddFolderPopup)
+    {
+        ImGui::OpenPopup("Add a new folder");
+        showAddFolderPopup = false;
     }
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -119,6 +126,25 @@ void WorkspaceWindow::Draw()
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
+    }
+    if (ImGui::BeginPopupModal("Add a new folder", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        static std::string folderName = "";
+        ImGui::InputText("Folder Name", &folderName);
+        if (ImGui::Button("OK"))
+        {
+            Folder f;
+            f.name = folderName;
+            m_currentWorkspace.folders.push_back(f);
+            WorkspaceManager::Instance().SaveWorkspace(m_currentWorkspace);
+            ImGui::CloseCurrentPopup();
+            folderName.clear();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            ImGui::CloseCurrentPopup();
+        }
     }
     ImGui::End();
 }
