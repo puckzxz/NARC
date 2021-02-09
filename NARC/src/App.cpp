@@ -11,7 +11,7 @@ App::App(): m_settings()
     WorkspaceWindowVisible = true;
     RequestWindowVisible = true;
     ResponseWindowVisible = true;
-    WebSocketWindowVisible = true;
+    WebSocketWindowVisible = false;
 }
 
 App::~App()
@@ -25,7 +25,9 @@ App::~App()
 
 bool App::Init()
 {
+#ifdef _WIN32
     FreeConsole();
+#endif
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
