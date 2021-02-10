@@ -4,13 +4,13 @@ IF NOT EXIST vcpkg (
     git clone https://github.com/microsoft/vcpkg.git
 )
 
-
 PUSHD vcpkg
+
+git checkout a84190e1deca1b6a466a82b439e5e4b9f8c41b0e
 
 IF NOT EXIST vcpkg.exe (
     CALL bootstrap-vcpkg.bat
 )
-
 
 CALL vcpkg.exe install glfw3:x64-windows
 CALL vcpkg.exe install cpr:x64-windows

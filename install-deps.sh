@@ -4,6 +4,8 @@ fi
 
 cd vcpkg
 
+git checkout a84190e1deca1b6a466a82b439e5e4b9f8c41b0e
+
 if [ ! -f "vcpkg" ]; then
     sh ./bootstrap-vcpkg.sh
 fi
