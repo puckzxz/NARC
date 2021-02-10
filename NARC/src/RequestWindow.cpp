@@ -51,7 +51,7 @@ void RequestWindow::Draw()
                 else if (m_requestName == "HEAD")
                     resp = cpr::Head(cpr::Url{m_requestURL}), cpr::Body{m_editor.GetText()};
                 else
-                    throw std::exception("Unknown REST Method");
+                    throw "Unknown REST Method";
                 ResponseWindow::Instance().SetResponse(resp);
             }
         }.detach();

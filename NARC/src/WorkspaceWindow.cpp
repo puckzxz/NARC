@@ -41,10 +41,12 @@ void WorkspaceWindow::Draw()
         {
             if (ImGui::Button("Delete"))
             {
-                m_currentWorkspace.requests.erase(
-                    std::ranges::remove_if(m_currentWorkspace.requests,
-                                           [&](Request const& x) { return x.name == r.name; }).begin(),
-                    m_currentWorkspace.requests.end());
+                m_currentWorkspace.requests.erase(std::remove_if(m_currentWorkspace.requests.begin(),
+                                                                 m_currentWorkspace.requests.end(),
+                                                                 [&](Request const& x)
+                                                                 {
+                                                                     return x.name == r.name;
+                                                                 }), m_currentWorkspace.requests.end());
                 WorkspaceManager::Instance().SaveWorkspace(m_currentWorkspace);
                 ImGui::CloseCurrentPopup();
             }

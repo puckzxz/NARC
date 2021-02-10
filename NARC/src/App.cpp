@@ -28,30 +28,37 @@ bool App::Init()
 #ifdef _WIN32
     FreeConsole();
 #endif
-    glfwInit();
+    if (!glfwInit())
+    {
+        std::cout << "Failed to init GLFW" << std::endl;
+        return false;
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
     m_settings = SettingsManager::Instance().GetSettings();
     if (m_settings.maximized)
     {
         glfwWindowHint(GLFW_MAXIMIZED, 1);
     }
     m_appWindow = glfwCreateWindow(m_settings.windowWidth, m_settings.windowHeight, "NARC", nullptr, nullptr);
-    glfwMakeContextCurrent(m_appWindow);
-    glfwSetWindowSize(m_appWindow, m_settings.windowWidth, m_settings.windowHeight);
-    glfwSwapInterval(1);
     if (m_appWindow == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return false;
     }
+    glfwMakeContextCurrent(m_appWindow);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return false;
     }
+    glfwSetWindowSize(m_appWindow, m_settings.windowWidth, m_settings.windowHeight);
+    glfwSwapInterval(1);
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     auto& io = ImGui::GetIO();
@@ -82,11 +89,13 @@ bool App::Init()
         app->m_settings.maximized = maximized;
         SettingsManager::Instance().SaveSettings(app->m_settings);
     });
+#ifdef _WIN32
     if (!ix::initNetSystem())
     {
         std::cout << "Failed to init WebSockets" << std::endl;
         return false;
     }
+#endif
     return true;
 }
 

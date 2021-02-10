@@ -37,7 +37,7 @@ Workspaces WorkspaceManager::GetWorkspaces()
     {
         if (!WriteFile())
         {
-            throw std::exception("Failed to create workspace file");
+            throw "Failed to create workspace file";
         }
         return GetWorkspaces();
     }

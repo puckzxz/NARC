@@ -1,7 +1,9 @@
 ﻿#pragma once
 
+#ifdef _WIN32
 #include "ixwebsocket/IXSocketMbedTLS.h"
 #include "ixwebsocket/IXNetSystem.h"
+#endif
 #include "ixwebsocket/IXWebSocket.h"
 
 #include <iostream>
