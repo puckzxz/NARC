@@ -14,6 +14,7 @@ fi
 ./vcpkg install cpr:x64-linux
 ./vcpkg install nlohmann-json:x64-linux
 ./vcpkg install ixwebsocket:x64-linux
+./vcpkg install spdlog:x64-linux
 
 cd installed/x64-linux/share
 

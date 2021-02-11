@@ -1,5 +1,7 @@
 ﻿#include "App.h"
 
+
+#include "Assert.h"
 #include "imgui_internal.h"
 #include "backends/imgui_impl_opengl3.cpp"
 #include "backends/imgui_impl_glfw.cpp"
@@ -25,12 +27,17 @@ App::~App()
 
 bool App::Init()
 {
+    Log::Init();
 #ifdef _WIN32
     FreeConsole();
 #endif
+    glfwSetErrorCallback([](const int id, const char* msg)
+    {
+        LOG_ERROR("id=%d msg=%s", id, msg);
+    });
     if (!glfwInit())
     {
-        std::cout << "Failed to init GLFW" << std::endl;
+        LOG_ERROR("Failed to init GLFW");
         return false;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -47,14 +54,14 @@ bool App::Init()
     m_appWindow = glfwCreateWindow(m_settings.windowWidth, m_settings.windowHeight, "NARC", nullptr, nullptr);
     if (m_appWindow == nullptr)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        LOG_ERROR("Failed to create GLFW window");
         glfwTerminate();
         return false;
     }
     glfwMakeContextCurrent(m_appWindow);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        LOG_ERROR("Failed to initialize GLAD");
         return false;
     }
     glfwSetWindowSize(m_appWindow, m_settings.windowWidth, m_settings.windowHeight);
@@ -78,9 +85,12 @@ bool App::Init()
     ImGui_ImplGlfw_InitForOpenGL(m_appWindow, true);
     ImGui_ImplOpenGL3_Init("#version 330");
     glViewport(0, 0, m_settings.windowWidth, m_settings.windowHeight);
-    glfwSetFramebufferSizeCallback(m_appWindow, framebufferCallback);
     glfwSetWindowUserPointer(m_appWindow, this);
-    glfwSetWindowSizeCallback(m_appWindow, [](GLFWwindow* window, int width, int height) mutable
+    glfwSetFramebufferSizeCallback(m_appWindow, [](GLFWwindow* window, const int width, const int height)
+    {
+        glViewport(0, 0, width, height);
+    });
+    glfwSetWindowSizeCallback(m_appWindow, [](GLFWwindow* window, const int width, const int height) mutable
     {
         auto* app = static_cast<App*>(glfwGetWindowUserPointer(window));
         app->m_settings.windowHeight = height;
@@ -92,7 +102,7 @@ bool App::Init()
 #ifdef _WIN32
     if (!ix::initNetSystem())
     {
-        std::cout << "Failed to init WebSockets" << std::endl;
+        LOG_ERROR("Failed to init WebSockets");
         return false;
     }
 #endif
@@ -201,9 +211,4 @@ void App::Run()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(m_appWindow);
     }
-}
-
-void App::framebufferCallback(GLFWwindow* window, const int width, const int height)
-{
-    glViewport(0, 0, width, height);
 }

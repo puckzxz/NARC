@@ -1,5 +1,7 @@
 #include "SettingsManager.h"
 
+#include "Assert.h"
+
 SettingsManager& SettingsManager::Instance()
 {
     static SettingsManager it;
@@ -20,7 +22,7 @@ Settings SettingsManager::GetSettings() const
     {
         if (!writeFile())
         {
-            throw "Failed to create workspace file";
+            NARC_ASSERT_NOT_REACHED("Failed to create workspace file");
         }
         return GetSettings();
     }

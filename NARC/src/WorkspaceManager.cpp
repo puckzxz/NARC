@@ -1,5 +1,7 @@
 #include "WorkspaceManager.h"
 
+#include "Assert.h"
+
 WorkspaceManager& WorkspaceManager::Instance()
 {
     static WorkspaceManager it;
@@ -37,7 +39,7 @@ Workspaces WorkspaceManager::GetWorkspaces()
     {
         if (!WriteFile())
         {
-            throw "Failed to create workspace file";
+            NARC_ASSERT_NOT_REACHED("Failed to write workspace file");
         }
         return GetWorkspaces();
     }

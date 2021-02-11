@@ -16,6 +16,7 @@ CALL vcpkg.exe install glfw3:x64-windows
 CALL vcpkg.exe install cpr:x64-windows
 CALL vcpkg.exe install nlohmann-json:x64-windows
 CALL vcpkg.exe install ixwebsocket:x64-windows
+CALL vcpkg.exe install spdlog:x64-windows
 
 PUSHD installed\x64-windows\share
 

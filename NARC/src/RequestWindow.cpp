@@ -1,5 +1,7 @@
 ﻿#include "RequestWindow.h"
 
+
+#include "Assert.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "misc/cpp/imgui_stdlib.cpp"
 
@@ -51,7 +53,7 @@ void RequestWindow::Draw()
                 else if (m_requestName == "HEAD")
                     resp = cpr::Head(cpr::Url{m_requestURL}), cpr::Body{m_editor.GetText()};
                 else
-                    throw "Unknown REST Method";
+                    NARC_ASSERT_NOT_REACHED("Invalid REST Method");
                 ResponseWindow::Instance().SetResponse(resp);
             }
         }.detach();

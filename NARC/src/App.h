@@ -1,23 +1,23 @@
 ﻿#pragma once
-
+#include <iostream>
+#include <string>
+#include <memory>
+#include "imgui.h"
 #ifdef _WIN32
 #include "ixwebsocket/IXSocketMbedTLS.h"
 #include "ixwebsocket/IXNetSystem.h"
 #endif
 #include "ixwebsocket/IXWebSocket.h"
-
-#include <iostream>
-#include <string>
-#include <memory>
-#include "imgui.h"
+#include "spdlog/spdlog.h"
 #include "RequestWindow.h"
 #include "ResponseWindow.h"
 #include "WorkspaceWindow.h"
 #include "WebsocketWindow.h"
+#include "SettingsManager.h"
+#include "Log.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "SettingsManager.h"
 
 class App
 {
@@ -33,6 +33,5 @@ public:
     inline static bool WebSocketWindowVisible;
 private:
     GLFWwindow* m_appWindow;
-    static void framebufferCallback(GLFWwindow* window, const int width, const int height);
     Settings m_settings;
 };
