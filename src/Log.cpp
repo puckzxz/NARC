@@ -10,7 +10,7 @@ void Log::Init()
     m_logger->set_level(spdlog::level::debug);
 }
 
-std::shared_ptr<spdlog::logger> Log::Get()
+std::shared_ptr<spdlog::logger>& Log::Get()
 {
     return m_logger;
 }

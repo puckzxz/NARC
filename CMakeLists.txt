@@ -6,11 +6,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(NARC)
 
-set(EXEC_NAME narc)
+set(EXEC_NAME NARC)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${EXEC_NAME})
 
-file(GLOB NARC_SRC "NARC/src/*.cpp" "NARC/src/*.h")
+file(GLOB NARC_SRC "src/*.cpp" "src/*.h")
 
 add_executable(${EXEC_NAME} ${NARC_SRC})
 
@@ -33,7 +33,7 @@ target_link_libraries(${EXEC_NAME} PRIVATE ixwebsocket::ixwebsocket)
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(${EXEC_NAME} PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
 
-add_subdirectory(NARC/dep/glad)
+add_subdirectory(external/glad)
 target_link_libraries(${EXEC_NAME} PRIVATE glad)
-add_subdirectory(NARC/dep/imgui)
+add_subdirectory(external/imgui)
 target_link_libraries(${EXEC_NAME} PRIVATE ImGui)
