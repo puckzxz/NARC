@@ -24,11 +24,11 @@ jobs:
 
     - name: Install Dependencies
       shell: cmd
-      run: ".\\install-deps.bat"
+      run: ".\\tools\\install-deps.bat"
 
     - name: Run CMake
       shell: powershell
-      run: ".\\cmake.bat"
+      run: ".\\tools\\cmake.bat"
 
     - name: Build
       run: msbuild /m /p:Configuration=${{env.BUILD_TYPE}} build/NARC.sln
