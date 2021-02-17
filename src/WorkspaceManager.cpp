@@ -8,16 +8,31 @@ WorkspaceManager& WorkspaceManager::Instance()
     return it;
 }
 
-bool WorkspaceManager::WriteFile()
+bool WorkspaceManager::writeDefaultWorkspaceFile()
 {
+    if (!std::filesystem::exists(m_folderName))
+    {
+        if (!std::filesystem::create_directory(m_folderName))
+        {
+            return false;
+        }
+    }
     std::vector<Request> reqs = {};
     const Workspace cf{"Default", reqs};
     Workspaces ws;
     ws.workspaces.push_back(cf);
-    std::ofstream os(m_fileName);
-    const json j = ws;
-    os << j << std::endl;
-    os.close();
+    try
+    {
+        std::ofstream os(formatWorkspaceFileName(cf.name));
+        const json j = ws;
+        os << j << std::endl;
+        os.close();
+    }
+    catch (std::exception& e)
+    {
+        LOG_ERROR(e.what());
+        return false;
+    }
     return true;
 }
 
@@ -30,31 +45,40 @@ void WorkspaceManager::SaveWorkspace(const Workspace& ws)
             w = ws;
         }
     }
-    saveWorkspaces();
+    saveWorkspaces(formatWorkspaceFileName(ws.name));
 }
 
 Workspaces WorkspaceManager::GetWorkspaces()
 {
-    if (!std::filesystem::exists(m_fileName))
+    if (!std::filesystem::exists(formatWorkspaceFileName("Default")))
     {
-        if (!WriteFile())
+        if (!writeDefaultWorkspaceFile())
         {
             NARC_ASSERT_NOT_REACHED("Failed to write workspace file");
         }
         return GetWorkspaces();
     }
-    std::ifstream is(m_fileName);
     json j;
-    is >> j;
-    is.close();
+    for (const auto& entry : std::filesystem::directory_iterator(m_folderName))
+    {
+        std::cout << entry.path() << std::endl;
+        std::ifstream is(entry.path());
+        is >> j;
+        is.close();
+    }
     m_workspaces = j.get<Workspaces>();
     return m_workspaces;
 }
 
-void WorkspaceManager::saveWorkspaces()
+void WorkspaceManager::saveWorkspaces(const std::string& name)
 {
-    std::ofstream os(m_fileName);
+    std::ofstream os(name);
     const json j = m_workspaces;
     os << j << std::endl;
     os.close();
+}
+
+std::string WorkspaceManager::formatWorkspaceFileName(const std::string& name)
+{
+    return m_folderName + "/" + name + ".narc";
 }

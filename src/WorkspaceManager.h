@@ -43,12 +43,13 @@ class WorkspaceManager
 {
 public:
     static WorkspaceManager& Instance();
-    bool WriteFile();
     void SaveWorkspace(const Workspace& ws);
     Workspaces GetWorkspaces();
 private:
     WorkspaceManager(){};
     Workspaces m_workspaces;
-    void saveWorkspaces();
-    std::string m_fileName = "workspaces.narc";
+    void saveWorkspaces(const std::string& name);
+    bool writeDefaultWorkspaceFile();
+    std::string formatWorkspaceFileName(const std::string& name);
+    const std::string m_folderName = "workspaces";
 };
