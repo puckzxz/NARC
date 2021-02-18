@@ -9,19 +9,19 @@ class WorkspaceWindow
 public:
     void Draw();
     static WorkspaceWindow& Instance();
-    void SetWorkspaces(const Workspaces& workspaces);
+    void SetWorkspaces(const std::vector<Workspace>& workspaces);
 private:
     WorkspaceWindow();
 
-    Workspaces m_workspaces;
+    std::vector<Workspace> m_workspaces;
     Workspace m_currentWorkspace;
 };
 
 inline WorkspaceWindow::WorkspaceWindow()
 {
     m_workspaces = WorkspaceManager::Instance().GetWorkspaces();
-    if (m_workspaces.workspaces.size() > 0)
+    if (m_workspaces.size() > 0)
     {
-        m_currentWorkspace = m_workspaces.workspaces.front();
+        m_currentWorkspace = m_workspaces.front();
     }
 }

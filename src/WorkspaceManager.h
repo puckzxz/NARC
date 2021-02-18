@@ -33,23 +33,17 @@ struct Workspace
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Workspace, name, requests, folders);
 };
 
-struct Workspaces
-{
-    std::vector<Workspace> workspaces;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Workspaces, workspaces);
-};
-
 class WorkspaceManager
 {
 public:
     static WorkspaceManager& Instance();
     void SaveWorkspace(const Workspace& ws);
-    Workspaces GetWorkspaces();
+    std::vector<Workspace>& GetWorkspaces();
 private:
     WorkspaceManager(){};
-    Workspaces m_workspaces;
-    void saveWorkspaces(const std::string& name);
-    bool writeDefaultWorkspaceFile();
-    std::string formatWorkspaceFileName(const std::string& name);
+    std::vector<Workspace> m_workspaces;
+    void saveWorkspace(const std::string& fileName, const Workspace& ws);
+    bool writeDefaultWorkspaceFile() const;
+    inline std::string formatWorkspaceFileName(const std::string& name) const;
     const std::string m_folderName = "workspaces";
 };

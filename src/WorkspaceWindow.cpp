@@ -14,7 +14,7 @@ void WorkspaceWindow::Draw()
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###Workspace", m_currentWorkspace.name.c_str()))
     {
-        for (const auto& w : m_workspaces.workspaces)
+        for (const auto& w : m_workspaces)
         {
             if (ImGui::Selectable(w.name.c_str()))
             {
@@ -110,7 +110,6 @@ void WorkspaceWindow::Draw()
         ImGui::Text("Request URL:");
         ImGui::InputText("###RequestURL", &requestURL);
         ImGui::Separator();
-
         if (ImGui::Button("OK", ImVec2(120, 0)))
         {
             const Request r = {requestName, m_requestName, requestURL};
@@ -157,7 +156,7 @@ WorkspaceWindow& WorkspaceWindow::Instance()
     return it;
 }
 
-void WorkspaceWindow::SetWorkspaces(const Workspaces& workspaces)
+void WorkspaceWindow::SetWorkspaces(const std::vector<Workspace>& workspaces)
 {
     m_workspaces = workspaces;
 }
