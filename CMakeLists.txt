@@ -8,11 +8,15 @@ project(NARC)
 
 set(EXEC_NAME NARC)
 
+if (WIN32)
+    set(NARC_ICON "res/resource.rc")
+endif()
+
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${EXEC_NAME})
 
 file(GLOB NARC_SRC "src/*.cpp" "src/*.h")
 
-add_executable(${EXEC_NAME} ${NARC_SRC})
+add_executable(${EXEC_NAME} ${APP_TYPE} ${NARC_SRC} ${NARC_ICON})
 
 add_definitions(-DGLFW_INCLUDE_NONE)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
