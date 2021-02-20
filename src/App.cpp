@@ -28,9 +28,6 @@ App::~App()
 bool App::Init()
 {
     Log::Init();
-#ifdef _WIN32
-    FreeConsole();
-#endif
     glfwSetErrorCallback([](const int id, const char* msg)
     {
         LOG_ERROR("id={0} msg={1}", id, msg);
