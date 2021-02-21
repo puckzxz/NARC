@@ -9,12 +9,15 @@
 
 void WorkspaceWindow::Draw()
 {
+    static bool showAddWorkspacePopup = false;
+    static bool showAddRequestPopup = false;
+    static bool showAddFolderPopup = false;
     // TODO: Fix default item, refer to Request.cpp
     ImGui::Begin("Workspace", &App::WorkspaceWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###Workspace", m_currentWorkspace.name.c_str()))
     {
-        for (const auto& w : m_workspaces)
+        for (const auto& w : *m_workspaces)
         {
             if (ImGui::Selectable(w.name.c_str()))
             {
@@ -24,13 +27,6 @@ void WorkspaceWindow::Draw()
         ImGui::EndCombo();
     }
     ImGui::PopItemWidth();
-    if (ImGui::BeginPopupContextItem("###WorkspaceComboCTX"))
-    {
-        if (ImGui::Button("New Workspace"))
-        {
-            // TODO: Create new workspace
-        }
-    }
     for (const auto& r : m_currentWorkspace.requests)
     {
         if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
@@ -53,11 +49,15 @@ void WorkspaceWindow::Draw()
             ImGui::EndPopup();
         }
     }
-    static bool showAddRequestPopup = false;
-    static bool showAddFolderPopup = false;
     if (ImGui::BeginPopupContextWindow("Workspace",
                                        ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
     {
+        if (ImGui::Button("New Workspace"))
+        {
+            // TODO: Create new workspace
+            ImGui::CloseCurrentPopup();
+            showAddWorkspacePopup = true;
+        }
         if (ImGui::Button("New Request"))
         {
             ImGui::CloseCurrentPopup();
@@ -71,6 +71,11 @@ void WorkspaceWindow::Draw()
         ImGui::EndPopup();
     }
     // TODO: Cleanup
+    if (showAddWorkspacePopup)
+    {
+        ImGui::OpenPopup("Add a new workspace");
+        showAddWorkspacePopup = false;
+    }
     if (showAddRequestPopup)
     {
         ImGui::OpenPopup("Add a new request");
@@ -147,6 +152,64 @@ void WorkspaceWindow::Draw()
             ImGui::CloseCurrentPopup();
         }
     }
+    if (ImGui::BeginPopupModal("Add a new workspace", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        struct TextFilters
+        {
+            static int FilterInvalidWorkspaceName(ImGuiInputTextCallbackData* data)
+            {
+                switch (data->EventChar)
+                {
+                    // Unix
+                case '/':
+                    // Windows
+                case '<':
+                case '>':
+                case ':':
+                case '\"':
+                case '\\':
+                case '|':
+                case '?':
+                case '*':
+                case ' ':
+                    return 1;
+                default:
+                    return 0;
+                }
+            }
+        };
+        static std::string workspaceName = "";
+        ImGui::InputText("Workspace Name", &workspaceName, ImGuiInputTextFlags_CallbackCharFilter,
+                         TextFilters::FilterInvalidWorkspaceName);
+        if (ImGui::Button("Add"))
+        {
+#ifdef _WIN32
+            // Windows has reserved filenames
+            if (std::find(m_invalidFolderNames.begin(), m_invalidFolderNames.end(), workspaceName) !=
+                m_invalidFolderNames.end())
+            {
+                workspaceName.clear();
+                return;
+            }
+            // Windows filenames cannot end in a "."
+            if (workspaceName.back() == '.')
+            {
+                workspaceName.pop_back();
+                return;
+            }
+#endif
+
+            WorkspaceManager::Instance().AddWorkspace(workspaceName);
+            ImGui::CloseCurrentPopup();
+            workspaceName.clear();
+            m_workspaces = WorkspaceManager::Instance().Workspaces();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel"))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+    }
     ImGui::End();
 }
 
@@ -154,9 +217,4 @@ WorkspaceWindow& WorkspaceWindow::Instance()
 {
     static WorkspaceWindow it;
     return it;
-}
-
-void WorkspaceWindow::SetWorkspaces(const std::vector<Workspace>& workspaces)
-{
-    m_workspaces = workspaces;
 }

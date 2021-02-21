@@ -38,10 +38,12 @@ class WorkspaceManager
 public:
     static WorkspaceManager& Instance();
     void SaveWorkspace(const Workspace& ws);
-    std::vector<Workspace>& GetWorkspaces();
+    bool LoadWorkspaces();
+    std::shared_ptr<const std::vector<Workspace>> Workspaces() const;
+    void AddWorkspace(const std::string& name);
 private:
     WorkspaceManager(){};
-    std::vector<Workspace> m_workspaces;
+    std::shared_ptr<std::vector<Workspace>> m_workspaces = std::make_shared<std::vector<Workspace>>();
     void saveWorkspace(const std::string& fileName, const Workspace& ws);
     bool writeDefaultWorkspaceFile() const;
     inline std::string formatWorkspaceFileName(const std::string& name) const;
