@@ -1,7 +1,6 @@
 #include "SettingsManager.h"
 
 #include <fstream>
-#include <iostream>
 #include "Assert.h"
 
 SettingsManager& SettingsManager::Instance()
@@ -37,7 +36,11 @@ Settings SettingsManager::GetSettings() const
 
 bool SettingsManager::writeFile() const
 {
-    const auto s = Settings{1280, 720, false};
+    Settings s;
+    s.windowWidth = 1280;
+    s.windowHeight = 720;
+    s.maximized = false;
+    s.theme = AppTheme::Dark;
     std::ofstream os(m_fileName);
     const json j = s;
     os << j << std::endl;

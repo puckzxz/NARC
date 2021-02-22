@@ -20,6 +20,7 @@ App::App(): m_settings()
     RequestWindowVisible = true;
     ResponseWindowVisible = true;
     WebSocketWindowVisible = false;
+    settingsWindowVisible = false;
 }
 
 App::~App()
@@ -77,7 +78,7 @@ bool App::Init()
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigDockingWithShift = true;
     io.ConfigDockingTransparentPayload = true;
-    ImGui::StyleColorsDark();
+    changeImGuiTheme(m_settings.theme);
     auto& style = ImGui::GetStyle();
     style.WindowMinSize = ImVec2(100.0f, 100.0f);
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -163,6 +164,7 @@ void App::Run()
         {
             if (ImGui::BeginMenu("File"))
             {
+                ImGui::MenuItem("Settings", nullptr, &settingsWindowVisible);
                 if (ImGui::MenuItem("Exit"))
                 {
                     glfwSetWindowShouldClose(m_appWindow, true);
@@ -186,18 +188,38 @@ void App::Run()
         }
         ImGui::End();
 
+        if (settingsWindowVisible)
+        {
+            ImGui::Begin("Settings", &settingsWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
+            static std::array<std::string, 3> themes = {"Dark", "Light", "Classic"};
+            if (ImGui::BeginCombo("###AppTheme", themes.at(m_settings.theme).c_str()))
+            {
+                for (auto i = 0; i < themes.size(); i++)
+                {
+                    if (ImGui::Selectable(themes.at(i).c_str()))
+                    {
+                        m_settings.theme = static_cast<AppTheme>(i);
+                        SettingsManager::Instance().SaveSettings(m_settings);
+                        changeImGuiTheme(m_settings.theme);
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::End();
+        }
+
         if (WorkspaceWindowVisible)
             WorkspaceWindow::Instance().Draw();
-        
+
         if (RequestWindowVisible)
             RequestWindow::Instance().Draw();
-        
+
         if (ResponseWindowVisible)
             ResponseWindow::Instance().Draw();
-        
+
         if (DemoWindowVisible)
             ImGui::ShowDemoWindow(&DemoWindowVisible);
-        
+
         if (WebSocketWindowVisible)
             WebsocketWindow::Instance().Draw();
 
@@ -213,5 +235,23 @@ void App::Run()
         }
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(m_appWindow);
+    }
+}
+
+void App::changeImGuiTheme(const AppTheme theme)
+{
+    switch (theme)
+    {
+    case Dark:
+        ImGui::StyleColorsDark();
+        break;
+    case Light:
+        ImGui::StyleColorsLight();
+        break;
+    case Classic:
+        ImGui::StyleColorsClassic();
+        break;
+    default:
+        ImGui::StyleColorsDark();
     }
 }

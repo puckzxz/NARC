@@ -20,6 +20,8 @@ public:
     inline static bool ResponseWindowVisible;
     inline static bool WebSocketWindowVisible;
 private:
+    inline static bool settingsWindowVisible;
     GLFWwindow* m_appWindow;
     Settings m_settings;
+    static void changeImGuiTheme(AppTheme theme);
 };

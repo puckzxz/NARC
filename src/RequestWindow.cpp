@@ -11,10 +11,16 @@ RequestWindow::RequestWindow()
 {
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
+    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+        m_editor.SetPalette(TextEditor::GetLightPalette());
 }
 
 void RequestWindow::Draw()
 {
+    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+        m_editor.SetPalette(TextEditor::GetLightPalette());
+    else
+        m_editor.SetPalette(TextEditor::GetDarkPalette());
     ImGui::Begin("Request", &App::RequestWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))

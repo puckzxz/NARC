@@ -10,6 +10,8 @@ ResponseWindow::ResponseWindow(): m_response()
     m_editor.SetReadOnly(true);
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
+    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+        m_editor.SetPalette(TextEditor::GetLightPalette());
 }
 
 ResponseWindow& ResponseWindow::Instance()
@@ -20,6 +22,10 @@ ResponseWindow& ResponseWindow::Instance()
 
 void ResponseWindow::Draw()
 {
+    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+        m_editor.SetPalette(TextEditor::GetLightPalette());
+    else
+        m_editor.SetPalette(TextEditor::GetDarkPalette());
     ImGui::Begin("Response", &App::ResponseWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
     if (m_response.status_code >= 100 && m_response.status_code <= 199)
         ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_response.status_code);
