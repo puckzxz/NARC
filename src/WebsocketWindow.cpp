@@ -1,8 +1,5 @@
 #include "WebsocketWindow.h"
 
-#include <iostream>
-
-
 #include "App.h"
 #include "imgui.h"
 

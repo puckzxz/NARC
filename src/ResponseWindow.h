@@ -1,12 +1,7 @@
 ﻿#pragma once
-#include "imgui.h"
-#include <string>
-#include <iomanip>
-#include "App.h"
-
-#include "cpr/cpr.h"
 
 #include "TextEditor.h"
+#include "cpr/cpr.h"
 
 class ResponseWindow
 {

@@ -1,6 +1,7 @@
 #pragma once
-#include <vector>
+
 #include <string>
+#include <vector>
 #include <ixwebsocket/IXWebSocket.h>
 
 class WebsocketWindow

@@ -1,5 +1,7 @@
 #include "SettingsManager.h"
 
+#include <fstream>
+#include <iostream>
 #include "Assert.h"
 
 SettingsManager& SettingsManager::Instance()

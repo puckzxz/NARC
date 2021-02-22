@@ -1,18 +1,9 @@
 ﻿#pragma once
 
-#include "imgui.h"
-#include <thread>
-#include <iostream>
-#include <cpr/cpr.h>
-#include "ResponseWindow.h"
-#include "nlohmann/json.hpp"
-#include <mutex>
 #include "App.h"
-#include <chrono>
-
-#include "WorkspaceManager.h"
-
 #include "TextEditor.h"
+#include "WorkspaceWindow.h"
+#include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
 class RequestWindow

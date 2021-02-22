@@ -2,7 +2,6 @@
 
 
 #include "RequestWindow.h"
-#include "WorkspaceManager.h"
 
 #include "misc/cpp/imgui_stdlib.h"
 
@@ -17,7 +16,7 @@ void WorkspaceWindow::Draw()
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###Workspace", m_currentWorkspace.name.c_str()))
     {
-        for (const auto& w : *m_workspaces)
+        for (const auto& w : m_workspaces)
         {
             if (ImGui::Selectable(w.name.c_str()))
             {
@@ -43,7 +42,7 @@ void WorkspaceWindow::Draw()
                                                                  {
                                                                      return x.name == r.name;
                                                                  }), m_currentWorkspace.requests.end());
-                WorkspaceManager::Instance().SaveWorkspace(m_currentWorkspace);
+                SaveWorkspace(m_currentWorkspace);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -108,10 +107,10 @@ void WorkspaceWindow::Draw()
             }
             ImGui::EndCombo();
         }
-        static std::string requestName = "";
+        static std::string requestName;
         ImGui::Text("Request Name:");
         ImGui::InputText("###RequestName", &requestName);
-        static std::string requestURL = "";
+        static std::string requestURL;
         ImGui::Text("Request URL:");
         ImGui::InputText("###RequestURL", &requestURL);
         ImGui::Separator();
@@ -119,7 +118,7 @@ void WorkspaceWindow::Draw()
         {
             const Request r = {requestName, m_requestName, requestURL};
             m_currentWorkspace.requests.push_back(r);
-            WorkspaceManager::Instance().SaveWorkspace(m_currentWorkspace);
+            SaveWorkspace(m_currentWorkspace);
             ImGui::CloseCurrentPopup();
             requestName.clear();
             requestURL.clear();
@@ -135,14 +134,14 @@ void WorkspaceWindow::Draw()
     }
     if (ImGui::BeginPopupModal("Add a new folder", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
-        static std::string folderName = "";
+        static std::string folderName;
         ImGui::InputText("Folder Name", &folderName);
         if (ImGui::Button("OK"))
         {
             Folder f;
             f.name = folderName;
             m_currentWorkspace.folders.push_back(f);
-            WorkspaceManager::Instance().SaveWorkspace(m_currentWorkspace);
+            SaveWorkspace(m_currentWorkspace);
             ImGui::CloseCurrentPopup();
             folderName.clear();
         }
@@ -178,7 +177,7 @@ void WorkspaceWindow::Draw()
                 }
             }
         };
-        static std::string workspaceName = "";
+        static std::string workspaceName;
         ImGui::InputText("Workspace Name", &workspaceName, ImGuiInputTextFlags_CallbackCharFilter,
                          TextFilters::FilterInvalidWorkspaceName);
         if (ImGui::Button("Add"))
@@ -199,10 +198,9 @@ void WorkspaceWindow::Draw()
             }
 #endif
 
-            WorkspaceManager::Instance().AddWorkspace(workspaceName);
+            AddWorkspace(workspaceName);
             ImGui::CloseCurrentPopup();
             workspaceName.clear();
-            m_workspaces = WorkspaceManager::Instance().Workspaces();
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
@@ -217,4 +215,106 @@ WorkspaceWindow& WorkspaceWindow::Instance()
 {
     static WorkspaceWindow it;
     return it;
+}
+
+void WorkspaceWindow::SaveWorkspace(const Workspace& ws)
+{
+    for (auto& w : m_workspaces)
+    {
+        if (w.name == ws.name)
+        {
+            w = ws;
+            saveWorkspace(formatWorkspaceFileName(ws.name), w);
+        }
+    }
+}
+
+bool WorkspaceWindow::LoadWorkspaces()
+{
+    if (!std::filesystem::exists(formatWorkspaceFileName("Default")))
+    {
+        if (!writeDefaultWorkspaceFile())
+        {
+            NARC_ASSERT_NOT_REACHED("Failed to write workspace file")
+        }
+        return LoadWorkspaces();
+    }
+    m_workspaces.clear();
+    for (const auto& entry : std::filesystem::directory_iterator(m_folderName))
+    {
+        json j;
+        std::ifstream is(entry.path());
+        is >> j;
+        is.close();
+        m_workspaces.push_back(j.get<Workspace>());
+    }
+    return true;
+}
+
+void WorkspaceWindow::AddWorkspace(const std::string& name)
+{
+    if (std::filesystem::exists(formatWorkspaceFileName(name)))
+    {
+        return;
+    }
+    const std::vector<Request> reqs = {};
+    const Workspace ws{name, reqs};
+    try
+    {
+        std::ofstream os(formatWorkspaceFileName(ws.name));
+        const json j = ws;
+        os << j << std::endl;
+        os.close();
+    }
+    catch (std::exception& e)
+    {
+        LOG_ERROR(e.what());
+    }
+    LoadWorkspaces();
+}
+
+void WorkspaceWindow::saveWorkspace(const std::string& fileName, const Workspace& ws)
+{
+    std::ofstream os(fileName);
+    for (const auto& w : m_workspaces)
+    {
+        if (w.name == ws.name)
+        {
+            const json j = w;
+            os << j << std::endl;
+            os.close();
+        }
+    }
+    LoadWorkspaces();
+}
+
+bool WorkspaceWindow::writeDefaultWorkspaceFile() const
+{
+    if (!std::filesystem::exists(m_folderName))
+    {
+        if (!std::filesystem::create_directory(m_folderName))
+        {
+            return false;
+        }
+    }
+    const std::vector<Request> reqs = {};
+    const Workspace ws{"Default", reqs};
+    try
+    {
+        std::ofstream os(formatWorkspaceFileName(ws.name));
+        const json j = ws;
+        os << j << std::endl;
+        os.close();
+    }
+    catch (std::exception& e)
+    {
+        LOG_ERROR(e.what());
+        return false;
+    }
+    return true;
+}
+
+std::string WorkspaceWindow::formatWorkspaceFileName(const std::string& name) const
+{
+    return m_folderName + "/" + name + ".narc";
 }

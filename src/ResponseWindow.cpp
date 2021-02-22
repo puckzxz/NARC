@@ -1,5 +1,8 @@
 ﻿#include "ResponseWindow.h"
 
+#include <string>
+#include "App.h"
+#include "imgui.h"
 #include "RequestWindow.h"
 
 ResponseWindow::ResponseWindow(): m_response()

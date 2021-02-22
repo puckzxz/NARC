@@ -1,7 +1,10 @@
 ﻿#include "RequestWindow.h"
 
-
+#include <thread>
+#include <cpr/cpr.h>
 #include "Assert.h"
+#include "imgui.h"
+#include "ResponseWindow.h"
 #include "misc/cpp/imgui_stdlib.cpp"
 
 RequestWindow::RequestWindow()

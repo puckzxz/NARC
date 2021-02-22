@@ -1,10 +1,16 @@
 ﻿#include "App.h"
-
-
-#include "Assert.h"
+#include <memory>
+#include "imgui.h"
 #include "imgui_internal.h"
-#include "backends/imgui_impl_opengl3.cpp"
+#include "Log.h"
+#include "RequestWindow.h"
+#include "ResponseWindow.h"
+#include "WebsocketWindow.h"
+#include "WorkspaceWindow.h"
 #include "backends/imgui_impl_glfw.cpp"
+#include "backends/imgui_impl_opengl3.cpp"
+#include "glad/glad.h"
+#include "spdlog/spdlog.h"
 
 App::App(): m_settings()
 {
