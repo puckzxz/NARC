@@ -48,6 +48,10 @@ void WorkspaceWindow::Draw()
             ImGui::EndPopup();
         }
     }
+    for (const auto& f : m_currentWorkspace.folders)
+    {
+        listAllItemsInFolder(f);
+    }
     if (ImGui::BeginPopupContextWindow("Workspace",
                                        ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
     {
@@ -317,4 +321,35 @@ bool WorkspaceWindow::writeDefaultWorkspaceFile() const
 std::string WorkspaceWindow::formatWorkspaceFileName(const std::string& name) const
 {
     return m_folderName + "/" + name + ".narc";
+}
+
+void WorkspaceWindow::listAllItemsInFolder(const Folder& folder)
+{
+    for (const auto& f : folder.folders)
+    {
+        listAllItemsInFolder(f);
+    }
+    if (ImGui::CollapsingHeader(folder.name.c_str()))
+    {
+        for (const auto& r : folder.requests)
+        {
+            if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
+            {
+                RequestWindow::Instance().SetRequest(r);
+            }
+        }
+    }
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::Button("Add Request"))
+        {
+        }
+        if (ImGui::Button("Add Folder"))
+        {
+        }
+        if (ImGui::Button("Delete"))
+        {
+        }
+        ImGui::EndPopup();
+    }
 }

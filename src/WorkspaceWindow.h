@@ -52,6 +52,7 @@ private:
     bool writeDefaultWorkspaceFile() const;
     inline std::string formatWorkspaceFileName(const std::string& name) const;
     const std::string m_folderName = "workspaces";
+    void listAllItemsInFolder(const Folder& folder);
 
     std::vector<Workspace> m_workspaces;
     Workspace m_currentWorkspace;
