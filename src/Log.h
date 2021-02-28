@@ -8,7 +8,7 @@ public:
     static void Init();
     static std::shared_ptr<spdlog::logger>& Get();
 private:
-    Log(){};
+    Log() {};
     inline static std::shared_ptr<spdlog::logger> m_logger;
 };
 

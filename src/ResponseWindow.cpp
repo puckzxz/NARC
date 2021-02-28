@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "RequestWindow.h"
 
-ResponseWindow::ResponseWindow(): m_response()
+ResponseWindow::ResponseWindow() : m_response()
 {
     m_editor.SetReadOnly(true);
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());

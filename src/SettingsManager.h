@@ -29,7 +29,7 @@ public:
     void SaveSettings(const Settings& s) const;
     Settings GetSettings() const;
 private:
-    SettingsManager(){};
+    SettingsManager() {};
     bool writeFile() const;
     std::string m_fileName = "settings.narc";
 };

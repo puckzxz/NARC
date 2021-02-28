@@ -28,7 +28,6 @@ void WebsocketWindow::Draw()
 
     ImGui::InputText("###WSMSG", &webSocketMsg);
 
-    
     if (!m_connected)
     {
         if (ImGui::Button("Connect"))
@@ -81,7 +80,6 @@ void WebsocketWindow::Draw()
     {
         ImGui::TextUnformatted(m.c_str());
     }
-
 
     ImGui::End();
 }

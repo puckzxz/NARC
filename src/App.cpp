@@ -12,7 +12,7 @@
 #include "glad/glad.h"
 #include "spdlog/spdlog.h"
 
-App::App(): m_settings()
+App::App() : m_settings()
 {
     m_appWindow = nullptr;
     DemoWindowVisible = false;
@@ -36,9 +36,9 @@ bool App::Init()
 {
     Log::Init();
     glfwSetErrorCallback([](const int id, const char* msg)
-    {
-        LOG_ERROR("id={0} msg={1}", id, msg);
-    });
+        {
+            LOG_ERROR("id={0} msg={1}", id, msg);
+        });
     if (!glfwInit())
     {
         LOG_ERROR("Failed to init GLFW");
@@ -91,18 +91,18 @@ bool App::Init()
     glViewport(0, 0, m_settings.windowWidth, m_settings.windowHeight);
     glfwSetWindowUserPointer(m_appWindow, this);
     glfwSetFramebufferSizeCallback(m_appWindow, [](GLFWwindow* window, const int width, const int height)
-    {
-        glViewport(0, 0, width, height);
-    });
+        {
+            glViewport(0, 0, width, height);
+        });
     glfwSetWindowSizeCallback(m_appWindow, [](GLFWwindow* window, const int width, const int height) mutable
-    {
-        auto* app = static_cast<App*>(glfwGetWindowUserPointer(window));
-        app->m_settings.windowHeight = height;
-        app->m_settings.windowWidth = width;
-        const bool maximized = glfwGetWindowAttrib(window, GLFW_MAXIMIZED);
-        app->m_settings.maximized = maximized;
-        SettingsManager::Instance().SaveSettings(app->m_settings);
-    });
+        {
+            auto* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+            app->m_settings.windowHeight = height;
+            app->m_settings.windowWidth = width;
+            const bool maximized = glfwGetWindowAttrib(window, GLFW_MAXIMIZED);
+            app->m_settings.maximized = maximized;
+            SettingsManager::Instance().SaveSettings(app->m_settings);
+        });
 #ifdef _WIN32
     if (!ix::initNetSystem())
     {
@@ -148,7 +148,7 @@ void App::Run()
 
             auto dockMainId = dockSpaceId;
             const auto dockMiddleId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.5f, nullptr,
-                                                                  &dockMainId);
+                &dockMainId);
             const auto dockRightId =
                 ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.7f, nullptr, &dockMainId);
 
@@ -191,7 +191,7 @@ void App::Run()
         if (settingsWindowVisible)
         {
             ImGui::Begin("Settings", &settingsWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
-            static std::array<std::string, 3> themes = {"Dark", "Light", "Classic"};
+            static std::array<std::string, 3> themes = { "Dark", "Light", "Classic" };
             if (ImGui::BeginCombo("###AppTheme", themes.at(m_settings.theme).c_str()))
             {
                 for (auto i = 0; i < themes.size(); i++)

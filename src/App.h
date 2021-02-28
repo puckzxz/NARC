@@ -6,7 +6,6 @@
 #include "SettingsManager.h"
 #include "GLFW/glfw3.h"
 
-
 class App
 {
 public:
