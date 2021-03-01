@@ -11,6 +11,7 @@ RequestWindow::RequestWindow()
 {
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
+    m_queryParams.push_back(std::pair<std::string, std::string>("", ""));
     if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
         m_editor.SetPalette(TextEditor::GetLightPalette());
 }
@@ -66,16 +67,87 @@ void RequestWindow::Draw()
             }
         }.detach();
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Format"))
+    ImGui::Separator();
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+    if (ImGui::BeginTabBar("RequestTabBar", tab_bar_flags))
     {
-        const auto text = m_editor.GetText();
-        if (json::accept(text))
+        if (ImGui::BeginTabItem("JSON"))
         {
-            m_editor.SetText(json::parse(text).dump(4));
+            if (ImGui::Button("Format"))
+            {
+                const auto text = m_editor.GetText();
+                if (json::accept(text))
+                {
+                    m_editor.SetText(json::parse(text).dump(4));
+                }
+            }
+            m_editor.Render("Request Editor");
+            ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Query"))
+        {
+            static std::string urlPreview;
+            ImGui::PushItemWidth(-FLT_MIN);
+            ImGui::InputText("###URLPreview", &urlPreview, ImGuiInputTextFlags_ReadOnly);
+            ImGui::PopItemWidth();
+            for (size_t i = 0; i < m_queryParams.size(); i++)
+            {
+                std::pair<std::string, std::string> q = m_queryParams.at(i);
+                for (size_t x = 0; x < 2; x++)
+                {
+                    if (x % 2 == 0)
+                    {
+                        ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() / 2);
+                        ImGui::InputText(std::string("###inpq" + std::to_string(i)).c_str(), &q.first);
+                        ImGui::PopItemWidth();
+                        ImGui::SameLine();
+                    }
+                    else
+                    {
+                        ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - 23);
+                        ImGui::InputText(std::string("###inps" + std::to_string(i)).c_str(), &q.second);
+                        ImGui::PopItemWidth();
+                        ImGui::SameLine();
+                        if (ImGui::Button(std::string("X##" + std::to_string(i)).c_str()))
+                        {
+                            if (m_queryParams.size() > 1)
+                            {
+                                m_queryParams.erase(m_queryParams.begin() + i);
+                                continue;
+                            }
+                        }
+                    }
+                    m_queryParams.at(i) = q;
+                }
+            }
+            if (ImGui::Button("Add"))
+            {
+                m_queryParams.push_back(std::pair<std::string, std::string>("", ""));
+            }
+
+            urlPreview.clear();
+
+            if (!m_requestURL.empty())
+            {
+                urlPreview = m_requestURL + "?";
+                for (auto [fst, snd] : m_queryParams)
+                {
+                    urlPreview.append(fst + "=" + snd + "&");
+                }
+                if (urlPreview.ends_with("&"))
+                {
+                    urlPreview.pop_back();
+                }
+            }
+
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Header"))
+        {
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
-    m_editor.Render("Request Editor");
     ImGui::End();
 }
 

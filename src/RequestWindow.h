@@ -24,4 +24,5 @@ private:
     std::string m_requestName = m_requestTypes[m_requestTypeIndex];
     TextEditor m_editor;
     std::string m_requestText;
+    std::vector<std::pair<std::string, std::string>> m_queryParams;
 };
