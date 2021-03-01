@@ -38,7 +38,7 @@ bool App::Init()
     });
     if (!glfwInit())
     {
-        Console::Error("Failed to init GLFW");
+        NARC_ASSERT_NOT_REACHED("Failed to init GLFW");
         return false;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -55,14 +55,14 @@ bool App::Init()
     m_appWindow = glfwCreateWindow(m_settings.windowWidth, m_settings.windowHeight, "NARC", nullptr, nullptr);
     if (m_appWindow == nullptr)
     {
-        Console::Error("Failed to create GLFW window");
+        NARC_ASSERT_NOT_REACHED("Failed to create GLFW window");
         glfwTerminate();
         return false;
     }
     glfwMakeContextCurrent(m_appWindow);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
-        Console::Error("Failed to initialize GLAD");
+        NARC_ASSERT_NOT_REACHED("Failed to initialize GLAD");
         return false;
     }
     glfwSetWindowSize(m_appWindow, m_settings.windowWidth, m_settings.windowHeight);
@@ -103,7 +103,7 @@ bool App::Init()
 #ifdef _WIN32
     if (!ix::initNetSystem())
     {
-        Console::Log("Failed to init WebSockets");
+        NARC_ASSERT_NOT_REACHED("Failed to init WebSockets");
         return false;
     }
 #endif

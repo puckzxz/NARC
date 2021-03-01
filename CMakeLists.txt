@@ -39,6 +39,9 @@ target_link_libraries(${EXEC_NAME} PRIVATE nlohmann_json nlohmann_json::nlohmann
 find_package(ixwebsocket CONFIG REQUIRED)
 target_link_libraries(${EXEC_NAME} PRIVATE ixwebsocket::ixwebsocket)
 
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(${EXEC_NAME} PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
+
 find_package(fmt CONFIG REQUIRED)
 target_link_libraries(${EXEC_NAME} PRIVATE fmt::fmt)
 
