@@ -45,15 +45,16 @@ public:
     static WorkspaceWindow& Instance();
 private:
     WorkspaceWindow();
-    void SaveWorkspace(const Workspace& ws);
-    bool LoadWorkspaces();
-    void AddWorkspace(const std::string& name);
-    void saveWorkspace(const std::string& fileName, const Workspace& ws);
-    bool writeDefaultWorkspaceFile() const;
-    inline std::string formatWorkspaceFileName(const std::string& name) const;
+    void saveWorkspace(const Workspace& ws);
+    bool loadWorkspaces();
+    void addWorkspace(const std::string& name);
+    bool writeDefaultWorkspaceFile();
+    inline std::string formatWorkspaceFileName(const std::string& name);
     const std::string m_folderName = "workspaces";
     void listAllItemsInFolder(const Folder& folder);
-
+    bool m_showAddWorkspacePopup;
+    bool m_showAddRequestPopup;
+    bool m_showAddFolderPopup;
     std::vector<Workspace> m_workspaces;
     Workspace m_currentWorkspace;
     static inline std::vector m_invalidFolderNames = {
@@ -64,7 +65,10 @@ private:
 
 inline WorkspaceWindow::WorkspaceWindow()
 {
-    if (!LoadWorkspaces())
+    m_showAddWorkspacePopup = false;
+    m_showAddRequestPopup = false;
+    m_showAddFolderPopup = false;
+    if (!loadWorkspaces())
     {
         NARC_ASSERT_NOT_REACHED("Failed to load workspaces");
     }

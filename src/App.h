@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Console.h"
 #ifdef _WIN32
 #include "ixwebsocket/IXNetSystem.h"
 #include "ixwebsocket/IXSocketMbedTLS.h"
@@ -20,6 +21,7 @@ public:
     inline static bool WebSocketWindowVisible;
 private:
     inline static bool settingsWindowVisible;
+    inline static bool m_consoleWindowVisible;
     GLFWwindow* m_appWindow;
     Settings m_settings;
     static void changeImGuiTheme(AppTheme theme);

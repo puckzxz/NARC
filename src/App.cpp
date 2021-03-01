@@ -2,7 +2,6 @@
 #include <memory>
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "Log.h"
 #include "RequestWindow.h"
 #include "ResponseWindow.h"
 #include "WebsocketWindow.h"
@@ -10,7 +9,6 @@
 #include "backends/imgui_impl_glfw.cpp"
 #include "backends/imgui_impl_opengl3.cpp"
 #include "glad/glad.h"
-#include "spdlog/spdlog.h"
 
 App::App() : m_settings()
 {
@@ -34,14 +32,13 @@ App::~App()
 
 bool App::Init()
 {
-    Log::Init();
     glfwSetErrorCallback([](const int id, const char* msg)
-        {
-            LOG_ERROR("id={0} msg={1}", id, msg);
-        });
+    {
+        Console::Error("id={0} msg={1}", id, msg);
+    });
     if (!glfwInit())
     {
-        LOG_ERROR("Failed to init GLFW");
+        Console::Error("Failed to init GLFW");
         return false;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -58,14 +55,14 @@ bool App::Init()
     m_appWindow = glfwCreateWindow(m_settings.windowWidth, m_settings.windowHeight, "NARC", nullptr, nullptr);
     if (m_appWindow == nullptr)
     {
-        LOG_ERROR("Failed to create GLFW window");
+        Console::Error("Failed to create GLFW window");
         glfwTerminate();
         return false;
     }
     glfwMakeContextCurrent(m_appWindow);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
-        LOG_ERROR("Failed to initialize GLAD");
+        Console::Error("Failed to initialize GLAD");
         return false;
     }
     glfwSetWindowSize(m_appWindow, m_settings.windowWidth, m_settings.windowHeight);
@@ -91,22 +88,22 @@ bool App::Init()
     glViewport(0, 0, m_settings.windowWidth, m_settings.windowHeight);
     glfwSetWindowUserPointer(m_appWindow, this);
     glfwSetFramebufferSizeCallback(m_appWindow, [](GLFWwindow* window, const int width, const int height)
-        {
-            glViewport(0, 0, width, height);
-        });
+    {
+        glViewport(0, 0, width, height);
+    });
     glfwSetWindowSizeCallback(m_appWindow, [](GLFWwindow* window, const int width, const int height) mutable
-        {
-            auto* app = static_cast<App*>(glfwGetWindowUserPointer(window));
-            app->m_settings.windowHeight = height;
-            app->m_settings.windowWidth = width;
-            const bool maximized = glfwGetWindowAttrib(window, GLFW_MAXIMIZED);
-            app->m_settings.maximized = maximized;
-            SettingsManager::Instance().SaveSettings(app->m_settings);
-        });
+    {
+        auto* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        app->m_settings.windowHeight = height;
+        app->m_settings.windowWidth = width;
+        const bool maximized = glfwGetWindowAttrib(window, GLFW_MAXIMIZED);
+        app->m_settings.maximized = maximized;
+        SettingsManager::Instance().SaveSettings(app->m_settings);
+    });
 #ifdef _WIN32
     if (!ix::initNetSystem())
     {
-        LOG_ERROR("Failed to init WebSockets");
+        Console::Log("Failed to init WebSockets");
         return false;
     }
 #endif
@@ -148,7 +145,7 @@ void App::Run()
 
             auto dockMainId = dockSpaceId;
             const auto dockMiddleId = ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.5f, nullptr,
-                &dockMainId);
+                                                                  &dockMainId);
             const auto dockRightId =
                 ImGui::DockBuilderSplitNode(dockMainId, ImGuiDir_Right, 0.7f, nullptr, &dockMainId);
 
@@ -178,6 +175,7 @@ void App::Run()
                 ImGui::MenuItem("Response Window", nullptr, &ResponseWindowVisible);
                 ImGui::MenuItem("WebSocket Window", nullptr, &WebSocketWindowVisible);
                 ImGui::MenuItem("Demo Window", nullptr, &DemoWindowVisible);
+                ImGui::MenuItem("Console", nullptr, &m_consoleWindowVisible);
                 if (ImGui::MenuItem("Reset Layout"))
                 {
                     ImGui::DockBuilderRemoveNode(dockSpaceId);
@@ -191,7 +189,7 @@ void App::Run()
         if (settingsWindowVisible)
         {
             ImGui::Begin("Settings", &settingsWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
-            static std::array<std::string, 3> themes = { "Dark", "Light", "Classic" };
+            static std::array<std::string, 3> themes = {"Dark", "Light", "Classic"};
             if (ImGui::BeginCombo("###AppTheme", themes.at(m_settings.theme).c_str()))
             {
                 for (auto i = 0; i < themes.size(); i++)
@@ -222,6 +220,9 @@ void App::Run()
 
         if (WebSocketWindowVisible)
             WebsocketWindow::Instance().Draw();
+
+        if (m_consoleWindowVisible)
+            Console::Draw("NARC: Console", &m_consoleWindowVisible);
 
         ImGui::Render();
         glClearColor(0, 0, 0, 1);

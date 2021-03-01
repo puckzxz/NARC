@@ -1,4 +1,5 @@
 #include "SettingsManager.h"
+#include "Console.h"
 
 #include <fstream>
 #include "Assert.h"
