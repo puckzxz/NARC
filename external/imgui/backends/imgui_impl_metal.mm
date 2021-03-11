@@ -13,6 +13,7 @@
 
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
+//  2021-02-18: Metal: Change blending equation to preserve alpha in output buffer.
 //  2021-01-25: Metal: Fixed texture storage mode when building on Mac Catalyst.
 //  2019-05-29: Metal: Added support for large mesh (64K+ vertices), enable ImGuiBackendFlags_RendererHasVtxOffset flag.
 //  2019-04-30: Metal: Added support for special ImDrawCallback_ResetRenderState callback to reset render state.
@@ -116,7 +117,7 @@ bool ImGui_ImplMetal_CreateFontsTexture(id<MTLDevice> device)
     [g_sharedMetalContext makeFontTextureWithDevice:device];
 
     ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->TexID = (__bridge void *)g_sharedMetalContext.fontTexture; // ImTextureID == void*
+    io.Fonts->SetTexID((__bridge void *)g_sharedMetalContext.fontTexture); // ImTextureID == void*
 
     return (g_sharedMetalContext.fontTexture != nil);
 }
@@ -125,7 +126,7 @@ void ImGui_ImplMetal_DestroyFontsTexture()
 {
     ImGuiIO& io = ImGui::GetIO();
     g_sharedMetalContext.fontTexture = nil;
-    io.Fonts->TexID = nullptr;
+    io.Fonts->SetTexID(nullptr);
 }
 
 bool ImGui_ImplMetal_CreateDeviceObjects(id<MTLDevice> device)
@@ -388,10 +389,10 @@ void ImGui_ImplMetal_DestroyDeviceObjects()
     pipelineDescriptor.colorAttachments[0].pixelFormat = self.framebufferDescriptor.colorPixelFormat;
     pipelineDescriptor.colorAttachments[0].blendingEnabled = YES;
     pipelineDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-    pipelineDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
     pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-    pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
     pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
     pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     pipelineDescriptor.depthAttachmentPixelFormat = self.framebufferDescriptor.depthPixelFormat;
     pipelineDescriptor.stencilAttachmentPixelFormat = self.framebufferDescriptor.stencilPixelFormat;
