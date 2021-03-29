@@ -20,7 +20,7 @@ jobs:
       uses: lukka/run-vcpkg@v6.2
       with:
         setupOnly: true
-        vcpkgGitCommitId: a84190e1deca1b6a466a82b439e5e4b9f8c41b0e
+        vcpkgGitCommitId: 105456798402aa5f494ffeb3b19dd0d870656d39
 
     - name: Install Dependencies
       shell: cmd
