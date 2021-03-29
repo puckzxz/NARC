@@ -45,7 +45,10 @@ target_link_libraries(${EXEC_NAME} PRIVATE spdlog::spdlog spdlog::spdlog_header_
 find_package(fmt CONFIG REQUIRED)
 target_link_libraries(${EXEC_NAME} PRIVATE fmt::fmt)
 
+find_package(imgui CONFIG REQUIRED)
+target_link_libraries(${EXEC_NAME} PRIVATE imgui::imgui)
+
 add_subdirectory(external/glad)
 target_link_libraries(${EXEC_NAME} PRIVATE glad)
-add_subdirectory(external/imgui)
-target_link_libraries(${EXEC_NAME} PRIVATE ImGui)
+add_subdirectory(external/ImGuiTextEditor)
+target_link_libraries(${EXEC_NAME} PRIVATE ImGuiTextEditor)

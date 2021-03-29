@@ -2,7 +2,7 @@
 
 #include "RequestWindow.h"
 
-#include "misc/cpp/imgui_stdlib.h"
+#include "imgui_stdlib.h"
 
 void WorkspaceWindow::Draw()
 {
@@ -21,27 +21,37 @@ void WorkspaceWindow::Draw()
         ImGui::EndCombo();
     }
     ImGui::PopItemWidth();
-    for (const auto& r : m_currentWorkspace.requests)
+    if (ImGui::BeginTable("###RequestTable", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
     {
-        if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
+        ImGui::TableSetupColumn("Method", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        for (const auto& r : m_currentWorkspace.requests)
         {
-            RequestWindow::Instance().SetRequest(r);
-        }
-        if (ImGui::BeginPopupContextItem())
-        {
-            if (ImGui::Button("Delete"))
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text(r.type.c_str());
+            ImGui::TableNextColumn();
+            if (ImGui::Selectable(r.name.c_str()))
             {
-                m_currentWorkspace.requests.erase(std::remove_if(m_currentWorkspace.requests.begin(),
-                                                                 m_currentWorkspace.requests.end(),
-                                                                 [&](Request const& x)
-                                                                 {
-                                                                     return x.name == r.name;
-                                                                 }), m_currentWorkspace.requests.end());
-                saveWorkspace(m_currentWorkspace);
-                ImGui::CloseCurrentPopup();
+                RequestWindow::Instance().SetRequest(r);
             }
-            ImGui::EndPopup();
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::Button("Delete"))
+                {
+                    m_currentWorkspace.requests.erase(std::remove_if(m_currentWorkspace.requests.begin(),
+                                                                     m_currentWorkspace.requests.end(),
+                                                                     [&](Request const& x)
+                                                                     {
+                                                                         return x.name == r.name;
+                                                                     }), m_currentWorkspace.requests.end());
+                    saveWorkspace(m_currentWorkspace);
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
         }
+        ImGui::EndTable();
     }
     for (const auto& f : m_currentWorkspace.folders)
     {
@@ -149,6 +159,7 @@ void WorkspaceWindow::Draw()
         {
             ImGui::CloseCurrentPopup();
         }
+        ImGui::EndPopup();
     }
     if (ImGui::BeginPopupModal("Add a new workspace", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
@@ -205,6 +216,7 @@ void WorkspaceWindow::Draw()
         {
             ImGui::CloseCurrentPopup();
         }
+        ImGui::EndPopup();
     }
     ImGui::End();
 }
@@ -284,6 +296,7 @@ bool WorkspaceWindow::writeDefaultWorkspaceFile()
     }
     const std::vector<Request> reqs = {};
     const Workspace ws{"Default", reqs};
+    m_workspaces.emplace_back(ws);
     try
     {
         saveWorkspace(ws);

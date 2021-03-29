@@ -4,7 +4,7 @@ fi
 
 cd vcpkg
 
-git checkout a84190e1deca1b6a466a82b439e5e4b9f8c41b0e
+git checkout 105456798402aa5f494ffeb3b19dd0d870656d39
 
 if [ ! -f "vcpkg" ]; then
     sh ./bootstrap-vcpkg.sh
@@ -16,6 +16,7 @@ fi
 ./vcpkg install ixwebsocket:x64-linux
 ./vcpkg install spdlog:x64-linux
 ./vcpkg install fmt:x64-linux
+./vcpkg install imgui[docking-experimental,opengl3-glad-binding,glfw-binding]:x64-linux
 
 cd installed/x64-linux/share
 

@@ -8,3 +8,4 @@ docs/
 *.vcxproj.filters
 *.vcxproj.user
 vcpkg/
+cmake/
