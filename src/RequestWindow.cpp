@@ -198,7 +198,19 @@ RequestWindow& RequestWindow::Instance()
 
 void RequestWindow::SetRequest(const Request& request)
 {
+    this->Reset();
     m_currentRequest = request;
     m_requestType = request.type;
     m_requestURL = request.url;
+}
+
+void RequestWindow::Reset()
+{
+    m_editor.SetText("");
+    m_requestText.clear();
+    m_headers.clear();
+    m_queryParams.clear();
+    m_cprHeaders.clear();
+    m_queryParams.emplace_back("", "");
+    m_headers.emplace_back("Content-Type", "application/json");
 }

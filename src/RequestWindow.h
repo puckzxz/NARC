@@ -13,6 +13,7 @@ public:
     void Draw();
     static RequestWindow& Instance();
     void SetRequest(const Request& request);
+    void Reset();
 private:
     RequestWindow();
     Request m_currentRequest;
