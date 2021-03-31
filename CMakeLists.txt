@@ -17,6 +17,8 @@ if(MSVC)
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 endif()
 
+add_compile_options("$<$<CONFIG:DEBUG>:-DNARC_DEBUG>")
+
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${EXEC_NAME})
 
 file(GLOB NARC_SRC "src/*.cpp" "src/*.h")
@@ -47,6 +49,10 @@ target_link_libraries(${EXEC_NAME} PRIVATE fmt::fmt)
 
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(${EXEC_NAME} PRIVATE imgui::imgui)
+
+find_package(cpprestsdk CONFIG REQUIRED)
+target_link_libraries(${EXEC_NAME} PRIVATE cpprestsdk::cpprest cpprestsdk::cpprestsdk_zlib_internal cpprestsdk::cpprestsdk_brotli_internal)
+
 
 add_subdirectory(external/glad)
 target_link_libraries(${EXEC_NAME} PRIVATE glad)

@@ -32,6 +32,10 @@ App::~App()
 
 bool App::Init()
 {
+    #ifdef NARC_DEBUG
+        AllocConsole();
+        freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+    #endif
     glfwSetErrorCallback([](const int id, const char* msg)
     {
         Console::Error("id={0} msg={1}", id, msg);
