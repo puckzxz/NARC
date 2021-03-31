@@ -4,6 +4,7 @@
 #include "TextEditor.h"
 #include "WorkspaceWindow.h"
 #include "nlohmann/json.hpp"
+#include <cpr/cpr.h>
 
 using json = nlohmann::json;
 class RequestWindow
@@ -24,5 +25,7 @@ private:
     std::string m_requestName = m_requestTypes[m_requestTypeIndex];
     TextEditor m_editor;
     std::string m_requestText;
+    std::vector<std::pair<std::string, std::string>> m_headers;
     std::vector<std::pair<std::string, std::string>> m_queryParams;
+    cpr::Header m_cprHeaders;
 };

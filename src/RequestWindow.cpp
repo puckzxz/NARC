@@ -1,7 +1,6 @@
 ﻿#include "RequestWindow.h"
 
 #include <thread>
-#include <cpr/cpr.h>
 #include "Assert.h"
 #include "imgui.h"
 #include "ResponseWindow.h"
@@ -11,7 +10,8 @@ RequestWindow::RequestWindow()
 {
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
-    m_queryParams.push_back(std::pair<std::string, std::string>("", ""));
+    m_queryParams.emplace_back("", "");
+    m_headers.emplace_back("Content-Type", "application/json");
     if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
         m_editor.SetPalette(TextEditor::GetLightPalette());
 }
@@ -48,9 +48,7 @@ void RequestWindow::Draw()
                     resp = cpr::Get(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "POST")
                     // TODO: Change this to inputs
-                    resp = cpr::Post(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()}, cpr::Header{
-                                         {"Content-Type", "application/json"}
-                                     });
+                    resp = cpr::Post(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()}, m_cprHeaders);
                 else if (m_requestName == "PUT")
                     resp = cpr::Put(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "PATCH")
@@ -132,7 +130,10 @@ void RequestWindow::Draw()
                 urlPreview = m_requestURL + "?";
                 for (auto [fst, snd] : m_queryParams)
                 {
-                    urlPreview.append(fst + "=" + snd + "&");
+                    if (!fst.empty() || !snd.empty())
+                    {
+                        urlPreview.append(fst + "=" + snd + "&");
+                    }
                 }
                 if (urlPreview.ends_with("&"))
                 {
@@ -144,6 +145,44 @@ void RequestWindow::Draw()
         }
         if (ImGui::BeginTabItem("Header"))
         {
+            for (size_t i = 0; i < m_headers.size(); i++)
+            {
+                std::pair<std::string, std::string> q = m_headers.at(i);
+                for (size_t x = 0; x < 2; x++)
+                {
+                    if (x % 2 == 0)
+                    {
+                        ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() / 2);
+                        ImGui::InputText(std::string("###inpq" + std::to_string(i)).c_str(), &q.first);
+                        ImGui::PopItemWidth();
+                        ImGui::SameLine();
+                    }
+                    else
+                    {
+                        ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - 23);
+                        ImGui::InputText(std::string("###inps" + std::to_string(i)).c_str(), &q.second);
+                        ImGui::PopItemWidth();
+                        ImGui::SameLine();
+                        if (ImGui::Button(std::string("X##" + std::to_string(i)).c_str()))
+                        {
+                            if (m_headers.size() > 1)
+                            {
+                                m_headers.erase(m_headers.begin() + i);
+                                continue;
+                            }
+                        }
+                    }
+                    m_headers.at(i) = q;
+                }
+            }
+            if (ImGui::Button("Add"))
+            {
+                m_headers.push_back(std::pair<std::string, std::string>("", ""));
+            }
+            for (auto [f, s] : m_headers)
+            {
+                m_cprHeaders.emplace(f, s);
+            }
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
