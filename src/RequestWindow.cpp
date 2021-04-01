@@ -23,7 +23,7 @@ void RequestWindow::Draw()
     else
         m_editor.SetPalette(TextEditor::GetDarkPalette());
     ImGui::Begin("Request", &App::RequestWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::PushItemWidth(-FLT_MIN);
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() / 6);
     if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
     {
         for (auto i = 0; i < m_requestTypes.size(); i++)
@@ -36,6 +36,9 @@ void RequestWindow::Draw()
         }
         ImGui::EndCombo();
     }
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
+    ImGui::PushItemWidth(-FLT_MIN);
     ImGui::InputText("###RequestURL", &m_requestURL);
     ImGui::PopItemWidth();
     if (ImGui::Button("Send"))
@@ -44,10 +47,10 @@ void RequestWindow::Draw()
             [&]() -> void
             {
                 cpr::Response resp;
+                cpr::Parameters para;
                 if (m_requestName == "GET")
                     resp = cpr::Get(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
                 else if (m_requestName == "POST")
-                    // TODO: Change this to inputs
                     resp = cpr::Post(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()}, m_cprHeaders);
                 else if (m_requestName == "PUT")
                     resp = cpr::Put(cpr::Url{m_requestURL}, cpr::Body{m_editor.GetText()});
@@ -112,6 +115,10 @@ void RequestWindow::Draw()
                             {
                                 m_queryParams.erase(m_queryParams.begin() + i);
                                 continue;
+                            }
+                            else
+                            {
+                                q = { "", "" };
                             }
                         }
                     }

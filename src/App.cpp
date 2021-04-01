@@ -38,7 +38,7 @@ bool App::Init()
     #endif
     glfwSetErrorCallback([](const int id, const char* msg)
     {
-        Console::Error("id={0} msg={1}", id, msg);
+        LOG_ERROR("id={0} msg={1}", id, msg);
     });
     if (!glfwInit())
     {

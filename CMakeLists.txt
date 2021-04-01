@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.15)
 set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -18,6 +18,7 @@ if(MSVC)
 endif()
 
 add_compile_options("$<$<CONFIG:DEBUG>:-DNARC_DEBUG>")
+add_compile_options("$<$<CONFIG:RELWITHDEBINFO>:-DNARC_DEBUG>")
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${EXEC_NAME})
 
@@ -49,9 +50,6 @@ target_link_libraries(${EXEC_NAME} PRIVATE fmt::fmt)
 
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(${EXEC_NAME} PRIVATE imgui::imgui)
-
-find_package(cpprestsdk CONFIG REQUIRED)
-target_link_libraries(${EXEC_NAME} PRIVATE cpprestsdk::cpprest cpprestsdk::cpprestsdk_zlib_internal cpprestsdk::cpprestsdk_brotli_internal)
 
 
 add_subdirectory(external/glad)
