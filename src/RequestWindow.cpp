@@ -18,7 +18,7 @@ RequestWindow::RequestWindow()
 
 int RequestWindow::findRequestIndex(const std::string& requestMethodName)
 {
-    for (int i = 0; i > m_requestTypes.size(); i++)
+    for (int i = 0; i < m_requestTypes.size(); i++)
         if (requestMethodName == m_requestTypes[i])
             return i;
     return 0;
