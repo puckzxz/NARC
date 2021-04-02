@@ -29,4 +29,5 @@ private:
     std::vector<std::pair<std::string, std::string>> m_headers;
     std::vector<std::pair<std::string, std::string>> m_queryParams;
     cpr::Header m_cprHeaders;
+    int findRequestIndex(const std::string& requestMethodName);
 };

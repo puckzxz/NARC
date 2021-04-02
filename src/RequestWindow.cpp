@@ -16,6 +16,14 @@ RequestWindow::RequestWindow()
         m_editor.SetPalette(TextEditor::GetLightPalette());
 }
 
+int RequestWindow::findRequestIndex(const std::string& requestMethodName)
+{
+    for (int i = 0; i > m_requestTypes.size(); i++)
+        if (requestMethodName == m_requestTypes[i])
+            return i;
+    return 0;
+}
+
 void RequestWindow::Draw()
 {
     if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
@@ -209,6 +217,7 @@ void RequestWindow::SetRequest(const Request& request)
     m_currentRequest = request;
     m_requestType = request.type;
     m_requestURL = request.url;
+    m_requestTypeIndex = findRequestIndex(request.type);
 }
 
 void RequestWindow::Reset()

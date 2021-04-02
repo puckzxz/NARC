@@ -72,7 +72,6 @@ inline WorkspaceWindow::WorkspaceWindow()
     {
         NARC_ASSERT_NOT_REACHED("Failed to load workspaces");
     }
-    // m_workspaces = WorkspaceManager::Instance().Workspaces();
     if (m_workspaces.size() > 0)
     {
         m_currentWorkspace = m_workspaces.front();

@@ -40,11 +40,11 @@ void WorkspaceWindow::Draw()
                 if (ImGui::Button("Delete"))
                 {
                     m_currentWorkspace.requests.erase(std::remove_if(m_currentWorkspace.requests.begin(),
-                                                                     m_currentWorkspace.requests.end(),
-                                                                     [&](Request const& x)
-                                                                     {
-                                                                         return x.name == r.name;
-                                                                     }), m_currentWorkspace.requests.end());
+                        m_currentWorkspace.requests.end(),
+                        [&](Request const& x)
+                        {
+                            return x.name == r.name;
+                        }), m_currentWorkspace.requests.end());
                     saveWorkspace(m_currentWorkspace);
                     ImGui::CloseCurrentPopup();
                 }
@@ -58,7 +58,7 @@ void WorkspaceWindow::Draw()
         listAllItemsInFolder(f);
     }
     if (ImGui::BeginPopupContextWindow("Workspace",
-                                       ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
+        ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
     {
         if (ImGui::Button("New Workspace"))
         {
@@ -125,7 +125,7 @@ void WorkspaceWindow::Draw()
         ImGui::Separator();
         if (ImGui::Button("OK", ImVec2(120, 0)))
         {
-            const Request r = {requestName, m_requestName, requestURL};
+            const Request r = { requestName, m_requestName, requestURL };
             m_currentWorkspace.requests.push_back(r);
             saveWorkspace(m_currentWorkspace);
             ImGui::CloseCurrentPopup();
@@ -189,7 +189,7 @@ void WorkspaceWindow::Draw()
         };
         static std::string workspaceName;
         ImGui::InputText("Workspace Name", &workspaceName, ImGuiInputTextFlags_CallbackCharFilter,
-                         TextFilters::FilterInvalidWorkspaceName);
+            TextFilters::FilterInvalidWorkspaceName);
         if (ImGui::Button("Add"))
         {
 #ifdef _WIN32
@@ -270,7 +270,7 @@ void WorkspaceWindow::addWorkspace(const std::string& name)
         return;
     }
     const std::vector<Request> reqs = {};
-    const Workspace ws{name, reqs};
+    const Workspace ws{ name, reqs };
     try
     {
         std::ofstream os(formatWorkspaceFileName(ws.name));
@@ -295,7 +295,7 @@ bool WorkspaceWindow::writeDefaultWorkspaceFile()
         }
     }
     const std::vector<Request> reqs = {};
-    const Workspace ws{"Default", reqs};
+    const Workspace ws{ "Default", reqs };
     m_workspaces.emplace_back(ws);
     try
     {
