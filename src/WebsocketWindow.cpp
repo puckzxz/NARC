@@ -5,20 +5,16 @@
 
 #include "imgui_stdlib.h"
 
-WebsocketWindow& WebsocketWindow::Instance()
-{
-    static WebsocketWindow it;
-    return it;
-}
-
 WebsocketWindow::WebsocketWindow()
 {
+    m_name = "WebSocket";
     m_webSocket.disableAutomaticReconnection();
+    Visible = false;
 }
 
 void WebsocketWindow::Draw()
 {
-    ImGui::Begin("WebSocket", &App::WebSocketWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("WebSocket", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
 
     static std::string webSocketURL = "wss://echo.websocket.org";
 
@@ -82,4 +78,10 @@ void WebsocketWindow::Draw()
     }
 
     ImGui::End();
+}
+
+WebsocketWindow* WebsocketWindow::Instance()
+{
+    static WebsocketWindow it;
+    return &it;
 }

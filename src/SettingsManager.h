@@ -25,11 +25,9 @@ struct Settings
 class SettingsManager
 {
 public:
-    static SettingsManager& Instance();
-    void SaveSettings(const Settings& s) const;
-    Settings GetSettings() const;
+    static void SaveSettings(const Settings& s);
+    static const Settings& GetSettings();
+    static void Init();
 private:
     SettingsManager() {};
-    bool writeFile() const;
-    std::string m_fileName = "settings.narc";
 };

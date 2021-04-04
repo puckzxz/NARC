@@ -3,12 +3,14 @@
 #include <string>
 #include <vector>
 #include <ixwebsocket/IXWebSocket.h>
+#include "Window.h"
 
-class WebsocketWindow
+class WebsocketWindow final : public Window
 {
 public:
-    static WebsocketWindow& Instance();
-    void Draw();
+    void Draw() override;
+    static WebsocketWindow* Instance();
+
 private:
     WebsocketWindow();
     std::vector<std::string> m_messages;

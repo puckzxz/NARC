@@ -8,25 +8,20 @@
 ResponseWindow::ResponseWindow() : m_response()
 {
     m_editor.SetReadOnly(true);
+    m_name = "Response";
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
-    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+    if (SettingsManager::GetSettings().theme == AppTheme::Light)
         m_editor.SetPalette(TextEditor::GetLightPalette());
-}
-
-ResponseWindow& ResponseWindow::Instance()
-{
-    static ResponseWindow it;
-    return it;
 }
 
 void ResponseWindow::Draw()
 {
-    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+    if (SettingsManager::GetSettings().theme == AppTheme::Light)
         m_editor.SetPalette(TextEditor::GetLightPalette());
     else
         m_editor.SetPalette(TextEditor::GetDarkPalette());
-    ImGui::Begin("Response", &App::ResponseWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Response", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
     if (m_response.status_code >= 100 && m_response.status_code <= 199)
         ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_response.status_code);
     if (m_response.status_code >= 200 && m_response.status_code <= 299)
@@ -100,4 +95,10 @@ void ResponseWindow::SetResponse(const cpr::Response& resp)
         m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::None());
         m_editor.SetText(resp.text);
     }
+}
+
+ResponseWindow* ResponseWindow::Instance()
+{
+    static ResponseWindow it;
+    return &it;    
 }

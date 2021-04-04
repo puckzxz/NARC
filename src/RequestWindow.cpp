@@ -8,17 +8,18 @@
 
 RequestWindow::RequestWindow()
 {
+    m_name = "Request";
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
     m_queryParams.emplace_back("", "");
     m_headers.emplace_back("Content-Type", "application/json");
-    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+    if (SettingsManager::GetSettings().theme == AppTheme::Light)
         m_editor.SetPalette(TextEditor::GetLightPalette());
 }
 
 int RequestWindow::findRequestIndex(const std::string& requestMethodName)
 {
-    for (int i = 0; i < m_requestTypes.size(); i++)
+    for (auto i = 0; i < m_requestTypes.size(); i++)
         if (requestMethodName == m_requestTypes[i])
             return i;
     return 0;
@@ -26,11 +27,11 @@ int RequestWindow::findRequestIndex(const std::string& requestMethodName)
 
 void RequestWindow::Draw()
 {
-    if (SettingsManager::Instance().GetSettings().theme == AppTheme::Light)
+    if (SettingsManager::GetSettings().theme == AppTheme::Light)
         m_editor.SetPalette(TextEditor::GetLightPalette());
     else
         m_editor.SetPalette(TextEditor::GetDarkPalette());
-    ImGui::Begin("Request", &App::RequestWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Request", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() / 6);
     if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
     {
@@ -72,7 +73,7 @@ void RequestWindow::Draw()
                     resp = cpr::Head(cpr::Url{m_requestURL}), cpr::Body{m_editor.GetText()};
                 else
                     NARC_ASSERT_NOT_REACHED("Invalid REST Method");
-                ResponseWindow::Instance().SetResponse(resp);
+                ResponseWindow::Instance()->SetResponse(resp);
             }
         }.detach();
     }
@@ -160,7 +161,7 @@ void RequestWindow::Draw()
         }
         if (ImGui::BeginTabItem("Header"))
         {
-            for (size_t i = 0; i < m_headers.size(); i++)
+            for (int i = 0; i < m_headers.size(); i++)
             {
                 std::pair<std::string, std::string> q = m_headers.at(i);
                 for (size_t x = 0; x < 2; x++)
@@ -205,12 +206,6 @@ void RequestWindow::Draw()
     ImGui::End();
 }
 
-RequestWindow& RequestWindow::Instance()
-{
-    static RequestWindow it;
-    return it;
-}
-
 void RequestWindow::SetRequest(const Request& request)
 {
     this->Reset();
@@ -218,6 +213,12 @@ void RequestWindow::SetRequest(const Request& request)
     m_requestType = request.type;
     m_requestURL = request.url;
     m_requestTypeIndex = findRequestIndex(request.type);
+}
+
+RequestWindow* RequestWindow::Instance()
+{
+    static RequestWindow it;
+    return &it;    
 }
 
 void RequestWindow::Reset()

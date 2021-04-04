@@ -1,14 +1,15 @@
 ﻿#pragma once
 
 #include "TextEditor.h"
+#include "Window.h"
 #include "cpr/cpr.h"
 
-class ResponseWindow
+class ResponseWindow : public Window
 {
 public:
-    static ResponseWindow& Instance();
-    void Draw();
+    void Draw() override;
     void SetResponse(const cpr::Response& resp);
+    static ResponseWindow* Instance();
 
 private:
     ResponseWindow();

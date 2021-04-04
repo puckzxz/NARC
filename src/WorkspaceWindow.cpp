@@ -7,7 +7,7 @@
 void WorkspaceWindow::Draw()
 {
     // TODO: Fix default item, refer to Request.cpp
-    ImGui::Begin("Workspace", &App::WorkspaceWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Workspace", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(-FLT_MIN);
     if (ImGui::BeginCombo("###Workspace", m_currentWorkspace.name.c_str()))
     {
@@ -33,7 +33,7 @@ void WorkspaceWindow::Draw()
             ImGui::TableNextColumn();
             if (ImGui::Selectable(r.name.c_str()))
             {
-                RequestWindow::Instance().SetRequest(r);
+                RequestWindow::Instance()->SetRequest(r);
             }
             if (ImGui::BeginPopupContextItem())
             {
@@ -221,10 +221,10 @@ void WorkspaceWindow::Draw()
     ImGui::End();
 }
 
-WorkspaceWindow& WorkspaceWindow::Instance()
+WorkspaceWindow* WorkspaceWindow::Instance()
 {
     static WorkspaceWindow it;
-    return it;
+    return &it;    
 }
 
 void WorkspaceWindow::saveWorkspace(const Workspace& ws)
@@ -326,7 +326,7 @@ void WorkspaceWindow::listAllItemsInFolder(const Folder& folder)
         {
             if (ImGui::Selectable(std::string(r.type + " " + r.name).c_str()))
             {
-                RequestWindow::Instance().SetRequest(r);
+                RequestWindow::Instance()->SetRequest(r);
             }
         }
     }
