@@ -9,3 +9,4 @@ docs/
 *.vcxproj.user
 vcpkg/
 cmake/
+CMakeSettings.json
