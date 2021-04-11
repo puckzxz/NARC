@@ -85,6 +85,7 @@ void ResponseWindow::Draw()
 void ResponseWindow::SetResponse(const cpr::Response& resp)
 {
     m_response = resp;
+    m_editor.SetText("");
     if (json::accept(resp.text))
     {
         m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
@@ -100,5 +101,5 @@ void ResponseWindow::SetResponse(const cpr::Response& resp)
 ResponseWindow* ResponseWindow::Instance()
 {
     static ResponseWindow it;
-    return &it;    
+    return &it;
 }
