@@ -1,8 +1,10 @@
+#!/bin/bash
+
 if [ ! -d "vcpkg" ]; then
     git clone https://github.com/microsoft/vcpkg.git
 fi
 
-cd vcpkg
+cd vcpkg || exit
 
 git checkout 105456798402aa5f494ffeb3b19dd0d870656d39
 
@@ -18,7 +20,7 @@ fi
 ./vcpkg install fmt:x64-linux
 ./vcpkg install imgui[docking-experimental,opengl3-glad-binding,glfw-binding]:x64-linux
 
-cd installed/x64-linux/share
+cd installed/x64-linux/share || exit
 
 if [ -f "ixwebsocket-config.cmake" ]; then
     mv ./ixwebsocket-config.cmake ./ixwebsocket/ixwebsocket-config.cmake
