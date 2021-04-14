@@ -10,7 +10,7 @@ public:
     void Draw() override;
     void SetResponse(const cpr::Response& resp);
     static ResponseWindow* Instance();
-
+    static inline bool Loading;
 private:
     ResponseWindow();
     cpr::Response m_response;

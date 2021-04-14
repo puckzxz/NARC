@@ -52,6 +52,7 @@ void RequestWindow::Draw()
     ImGui::PopItemWidth();
     if (ImGui::Button("Send"))
     {
+        ResponseWindow::Loading = true;
         std::thread{
             [&]() -> void
             {

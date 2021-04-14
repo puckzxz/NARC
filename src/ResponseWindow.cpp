@@ -3,6 +3,7 @@
 #include <string>
 #include "App.h"
 #include "imgui.h"
+#include "ImGui_additions.h"
 #include "RequestWindow.h"
 
 ResponseWindow::ResponseWindow() : m_response()
@@ -11,6 +12,7 @@ ResponseWindow::ResponseWindow() : m_response()
     m_name = "Response";
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
+    Loading = false;
     if (SettingsManager::GetSettings().theme == AppTheme::Light)
         m_editor.SetPalette(TextEditor::GetLightPalette());
 }
@@ -22,6 +24,11 @@ void ResponseWindow::Draw()
     else
         m_editor.SetPalette(TextEditor::GetDarkPalette());
     ImGui::Begin("Response", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
+    if (Loading)
+    {
+        const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+        ImGui::Spinner("###SpinnerName", 6, 6, col);
+    }
     if (m_response.status_code >= 100 && m_response.status_code <= 199)
         ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_response.status_code);
     if (m_response.status_code >= 200 && m_response.status_code <= 299)
@@ -96,6 +103,7 @@ void ResponseWindow::SetResponse(const cpr::Response& resp)
         m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::None());
         m_editor.SetText(resp.text);
     }
+    Loading = false;
 }
 
 ResponseWindow* ResponseWindow::Instance()
