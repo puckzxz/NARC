@@ -24,11 +24,6 @@ void ResponseWindow::Draw()
     else
         m_editor.SetPalette(TextEditor::GetDarkPalette());
     ImGui::Begin("Response", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
-    if (Loading)
-    {
-        const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-        ImGui::Spinner("###SpinnerName", 6, 6, col);
-    }
     if (m_response.status_code >= 100 && m_response.status_code <= 199)
         ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_response.status_code);
     if (m_response.status_code >= 200 && m_response.status_code <= 299)
@@ -44,49 +39,58 @@ void ResponseWindow::Draw()
         ImGui::SameLine();
         ImGui::Text("%.2f ms", m_response.elapsed * 1000);
     }
-    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-    if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+    if (Loading)
     {
-        if (ImGui::BeginTabItem("JSON"))
-        {
-            this->m_editor.Render("Text Editor");
-            ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Headers"))
-        {
-            if (ImGui::BeginTable("##Headers", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
-            {
-                for (const auto& [name, value] : m_response.header)
-                {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    ImGui::Text(name.c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::TextWrapped(value.c_str());
-                }
-                ImGui::EndTable();
-            }
-            ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Cookies"))
-        {
-            if (ImGui::BeginTable("##Cookies", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
-            {
-                for (const auto& [name, value] : m_response.cookies)
-                {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    ImGui::Text(name.c_str());
-                    ImGui::TableNextColumn();
-                    ImGui::TextWrapped(value.c_str());
-                }
-                ImGui::EndTable();
-            }
-            ImGui::EndTabItem();
-        }
-        ImGui::EndTabBar();
+        const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+        ImGui::Spinner("###SpinnerName", 36, 10, col);
     }
-    ImGui::End();
+    else
+    {
+
+        ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+        if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+        {
+            if (ImGui::BeginTabItem("JSON"))
+            {
+                this->m_editor.Render("Text Editor");
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Headers"))
+            {
+                if (ImGui::BeginTable("##Headers", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
+                {
+                    for (const auto& [name, value] : m_response.header)
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        ImGui::Text(name.c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::TextWrapped(value.c_str());
+                    }
+                    ImGui::EndTable();
+                }
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Cookies"))
+            {
+                if (ImGui::BeginTable("##Cookies", 2, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg))
+                {
+                    for (const auto& [name, value] : m_response.cookies)
+                    {
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        ImGui::Text(name.c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::TextWrapped(value.c_str());
+                    }
+                    ImGui::EndTable();
+                }
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+        ImGui::End();
+    }
 }
 
 void ResponseWindow::SetResponse(const cpr::Response& resp)
