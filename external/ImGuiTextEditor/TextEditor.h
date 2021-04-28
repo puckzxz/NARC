@@ -16,22 +16,14 @@ public:
 	enum class PaletteIndex
 	{
 		Default,
+		Key,
+		String,
 		Keyword,
 		Number,
-		String,
-		CharLiteral,
 		Punctuation,
-		Preprocessor,
-		Identifier,
-		KnownIdentifier,
-		PreprocIdentifier,
-		Comment,
-		MultiLineComment,
 		Background,
 		Cursor,
 		Selection,
-		ErrorMarker,
-		Breakpoint,
 		LineNumber,
 		CurrentLineFill,
 		CurrentLineFillInactive,
@@ -44,18 +36,6 @@ public:
 		Normal,
 		Word,
 		Line
-	};
-
-	struct Breakpoint
-	{
-		int mLine;
-		bool mEnabled;
-		std::string mCondition;
-
-		Breakpoint()
-			: mLine(-1)
-			, mEnabled(false)
-		{}
 	};
 
 	// Represents a character coordinate from the user's point of view,
@@ -131,6 +111,7 @@ public:
 	typedef std::map<int, std::string> ErrorMarkers;
 	typedef std::unordered_set<int> Breakpoints;
 	typedef std::array<ImU32, (unsigned)PaletteIndex::Max> Palette;
+
 	typedef uint8_t Char;
 
 	struct Glyph
@@ -173,13 +154,6 @@ public:
 		{
 		}
 
-		static const LanguageDefinition& CPlusPlus();
-		static const LanguageDefinition& HLSL();
-		static const LanguageDefinition& GLSL();
-		static const LanguageDefinition& C();
-		static const LanguageDefinition& SQL();
-		static const LanguageDefinition& AngelScript();
-		static const LanguageDefinition& Lua();
 		static const LanguageDefinition& JSON();
 		static const LanguageDefinition& None();
 	};

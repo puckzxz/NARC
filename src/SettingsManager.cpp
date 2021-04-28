@@ -3,8 +3,10 @@
 
 #include <fstream>
 #include "Assert.h"
+#include "TextEditor.h"
+#include <map>
 
-static std::string m_fileName = "settings.narc";
+static std::string s_settingsFilename = "settings.narc";
 
 static Settings currentSettings;
 
@@ -15,9 +17,10 @@ static bool writeDefaultSettingsFile()
     s.windowHeight = 720;
     s.maximized = false;
     s.theme = AppTheme::Dark;
+    s.palette = s_p;
     try
     {
-        std::ofstream os(m_fileName);
+        std::ofstream os(s_settingsFilename);
         const json j = s;
         os << j << std::endl;
         os.close();
@@ -32,23 +35,33 @@ static bool writeDefaultSettingsFile()
 
 static void loadSettings()
 {
-    if (!std::filesystem::exists(m_fileName))
+    if (!std::filesystem::exists(s_settingsFilename))
     {
         if (!writeDefaultSettingsFile())
         {
             NARC_ASSERT_NOT_REACHED("Failed to create workspace file");
         }
     }
-    std::ifstream is(m_fileName);
+    std::ifstream is(s_settingsFilename);
     json j;
     is >> j;
     is.close();
-    currentSettings = j.get<Settings>();
+    try
+    {
+        currentSettings = j.get<Settings>();
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR(e.what());
+        LOG_ERROR("Failed to load settings file, using default settings");
+        writeDefaultSettingsFile();
+        loadSettings();
+    }
 }
 
 void SettingsManager::SaveSettings(const Settings& s)
 {
-    std::ofstream os(m_fileName);
+    std::ofstream os(s_settingsFilename);
     const json j = s;
     os << j << std::endl;
     os.close();
@@ -63,4 +76,9 @@ const Settings& SettingsManager::GetSettings()
 void SettingsManager::Init()
 {
     loadSettings();
+}
+
+TextEditor::Palette SettingsManager::GetPalette()
+{
+    return currentSettings.palette;
 }

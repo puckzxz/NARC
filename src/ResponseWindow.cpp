@@ -12,17 +12,12 @@ ResponseWindow::ResponseWindow() : m_response()
     m_name = "Response";
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
+    m_editor.SetPalette(SettingsManager::GetPalette());
     Loading = false;
-    if (SettingsManager::GetSettings().theme == AppTheme::Light)
-        m_editor.SetPalette(TextEditor::GetLightPalette());
 }
 
 void ResponseWindow::Draw()
 {
-    if (SettingsManager::GetSettings().theme == AppTheme::Light)
-        m_editor.SetPalette(TextEditor::GetLightPalette());
-    else
-        m_editor.SetPalette(TextEditor::GetDarkPalette());
     ImGui::Begin("Response", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
     if (m_response.status_code >= 100 && m_response.status_code <= 199)
         ImGui::TextColored({ 150, 150, 150, 1 }, "%d", m_response.status_code);
@@ -42,17 +37,16 @@ void ResponseWindow::Draw()
     if (Loading)
     {
         const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-        ImGui::Spinner("###SpinnerName", 36, 10, col);
+        ImGui::Spinner("###SpinnerName", 24, 8, col);
     }
     else
     {
-
         ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
         if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
         {
             if (ImGui::BeginTabItem("JSON"))
             {
-                this->m_editor.Render("Text Editor");
+                this->m_editor.Render("Response JSON");
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Headers"))
@@ -63,9 +57,9 @@ void ResponseWindow::Draw()
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
-                        ImGui::Text(name.c_str());
+                        ImGui::Text("%s", name.c_str());
                         ImGui::TableNextColumn();
-                        ImGui::TextWrapped(value.c_str());
+                        ImGui::TextWrapped("%s", value.c_str());
                     }
                     ImGui::EndTable();
                 }
@@ -79,9 +73,9 @@ void ResponseWindow::Draw()
                     {
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
-                        ImGui::Text(name.c_str());
+                        ImGui::Text("%s", name.c_str());
                         ImGui::TableNextColumn();
-                        ImGui::TextWrapped(value.c_str());
+                        ImGui::TextWrapped("%s", value.c_str());
                     }
                     ImGui::EndTable();
                 }
@@ -89,8 +83,8 @@ void ResponseWindow::Draw()
             }
             ImGui::EndTabBar();
         }
-        ImGui::End();
     }
+    ImGui::End();
 }
 
 void ResponseWindow::SetResponse(const cpr::Response& resp)

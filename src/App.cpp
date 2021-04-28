@@ -9,16 +9,13 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "glad/glad.h"
+#include "TextEditor.h"
 
 App::App() : m_settings()
 {
     m_appWindow = nullptr;
     DemoWindowVisible = false;
     settingsWindowVisible = false;
-    m_windows.push_back(WorkspaceWindow::Instance());
-    m_windows.push_back(RequestWindow::Instance());
-    m_windows.push_back(ResponseWindow::Instance());
-    m_windows.push_back(WebsocketWindow::Instance());
 }
 
 App::~App()
@@ -32,12 +29,16 @@ App::~App()
 
 bool App::Init()
 {
-    Log::Init();
-    SettingsManager::Init();
 #ifdef NARC_DEBUG
     AllocConsole();
     freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 #endif
+    Log::Init();
+    SettingsManager::Init();
+    m_windows.push_back(WorkspaceWindow::Instance());
+    m_windows.push_back(RequestWindow::Instance());
+    m_windows.push_back(ResponseWindow::Instance());
+    m_windows.push_back(WebsocketWindow::Instance());
     glfwSetErrorCallback([](const int id, const char* msg)
         {
             LOG_ERROR("id={0} msg={1}", id, msg);
@@ -194,9 +195,9 @@ void App::Run()
 
         if (settingsWindowVisible)
         {
-            ImGui::Begin("Settings", &settingsWindowVisible, ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Begin("Settings", &settingsWindowVisible);
             static std::array<std::string, 3> themes = { "Dark", "Light", "Classic" };
-            if (ImGui::BeginCombo("###AppTheme", themes.at(m_settings.theme).c_str()))
+            if (ImGui::BeginCombo("Theme", themes.at(m_settings.theme).c_str()))
             {
                 for (auto i = 0; i < themes.size(); i++)
                 {
@@ -208,6 +209,21 @@ void App::Run()
                     }
                 }
                 ImGui::EndCombo();
+            }
+            static auto pal = SettingsManager::GetPalette();
+            for (int i = 0; i < (int)TextEditor::PaletteIndex::Max; ++i)
+            {
+                auto color = ImGui::ColorConvertU32ToFloat4(pal[i]);
+                color.w *= ImGui::GetStyle().Alpha;
+                ImGui::ColorEdit4(std::string(SettingsManager::PaletteIndexNames[i]).c_str(), &color.x);
+                pal[i] = ImGui::ColorConvertFloat4ToU32(color);
+            }
+            ResponseWindow::Instance()->GetEditor()->SetPalette(pal);
+            RequestWindow::Instance()->GetEditor()->SetPalette(pal);
+            if (ImGui::Button("Save"))
+            {
+                m_settings.palette = pal;
+                SettingsManager::SaveSettings(m_settings);
             }
             ImGui::End();
         }

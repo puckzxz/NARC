@@ -13,8 +13,7 @@ RequestWindow::RequestWindow()
     m_editor.SetShowWhitespaces(false);
     m_queryParams.emplace_back("", "");
     m_headers.emplace_back("Content-Type", "application/json");
-    if (SettingsManager::GetSettings().theme == AppTheme::Light)
-        m_editor.SetPalette(TextEditor::GetLightPalette());
+    m_editor.SetPalette(SettingsManager::GetPalette());
 }
 
 int RequestWindow::findRequestIndex(const std::string& requestMethodName)
@@ -27,10 +26,6 @@ int RequestWindow::findRequestIndex(const std::string& requestMethodName)
 
 void RequestWindow::Draw()
 {
-    if (SettingsManager::GetSettings().theme == AppTheme::Light)
-        m_editor.SetPalette(TextEditor::GetLightPalette());
-    else
-        m_editor.SetPalette(TextEditor::GetDarkPalette());
     ImGui::Begin("Request", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() / 6);
     if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
@@ -219,7 +214,7 @@ void RequestWindow::SetRequest(const Request& request)
 RequestWindow* RequestWindow::Instance()
 {
     static RequestWindow it;
-    return &it;    
+    return &it;
 }
 
 void RequestWindow::Reset()

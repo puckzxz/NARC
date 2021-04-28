@@ -12,14 +12,10 @@ class RequestWindow : public Window
 {
 public:
     void Draw() override;
-
     void SetRequest(const Request& request);
-
     static RequestWindow* Instance();
-
+    TextEditor* GetEditor() { return &m_editor; }
     void Reset();
-
-
 private:
     RequestWindow();
     Request m_currentRequest;
