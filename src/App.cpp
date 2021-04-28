@@ -225,6 +225,12 @@ void App::Run()
                 m_settings.palette = pal;
                 SettingsManager::SaveSettings(m_settings);
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Reset Palette"))
+            {
+                pal = SettingsManager::GetDefaultPalette();
+            }
+
             ImGui::End();
         }
 

@@ -54,6 +54,11 @@ public:
 
     static TextEditor::Palette GetPalette();
 
+    static TextEditor::Palette GetDefaultPalette()
+    {
+        return s_p;
+    }
+
     static void Init();
 
     inline static const std::array<std::string, (unsigned)TextEditor::PaletteIndex::Max> PaletteIndexNames = {
