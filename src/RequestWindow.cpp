@@ -18,8 +18,8 @@ RequestWindow::RequestWindow()
 
 int RequestWindow::findRequestIndex(const std::string& requestMethodName)
 {
-    for (auto i = 0; i < m_requestTypes.size(); i++)
-        if (requestMethodName == m_requestTypes[i])
+    for (auto i = 0; i < App::RequestMethods.size(); i++)
+        if (requestMethodName == App::RequestMethods[i])
             return i;
     return 0;
 }
@@ -28,14 +28,14 @@ void RequestWindow::Draw()
 {
     ImGui::Begin("Request", &Visible, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() / 6);
-    if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
+    if (ImGui::BeginCombo("###RequestType", App::RequestMethods.at(m_requestTypeIndex).c_str()))
     {
-        for (auto i = 0; i < m_requestTypes.size(); i++)
+        for (auto i = 0; i < App::RequestMethods.size(); i++)
         {
-            if (ImGui::Selectable(m_requestTypes.at(i).c_str()))
+            if (ImGui::Selectable(App::RequestMethods.at(i).c_str()))
             {
                 m_requestTypeIndex = i;
-                m_requestName = m_requestTypes[i];
+                m_requestName = App::RequestMethods[i];
             }
         }
         ImGui::EndCombo();

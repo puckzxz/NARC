@@ -99,19 +99,16 @@ void WorkspaceWindow::Draw()
     if (ImGui::BeginPopupModal("Add a new request", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         static uint8_t m_requestTypeIndex = 0;
-        static std::array<std::string, 7> m_requestTypes = {
-            "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"
-        };
-        static std::string m_requestName = m_requestTypes[m_requestTypeIndex];
+        static std::string m_requestName = App::RequestMethods[m_requestTypeIndex];
         ImGui::Text("Request Method:");
-        if (ImGui::BeginCombo("###RequestType", m_requestTypes.at(m_requestTypeIndex).c_str()))
+        if (ImGui::BeginCombo("###RequestType", App::RequestMethods.at(m_requestTypeIndex).c_str()))
         {
-            for (auto i = 0; i < m_requestTypes.size(); i++)
+            for (auto i = 0; i < App::RequestMethods.size(); i++)
             {
-                if (ImGui::Selectable(m_requestTypes.at(i).c_str()))
+                if (ImGui::Selectable(App::RequestMethods.at(i).c_str()))
                 {
                     m_requestTypeIndex = i;
-                    m_requestName = m_requestTypes[i];
+                    m_requestName = App::RequestMethods[i];
                 }
             }
             ImGui::EndCombo();

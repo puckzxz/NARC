@@ -16,6 +16,9 @@ public:
     bool Init();
     void Run();
     inline static bool DemoWindowVisible;
+    inline static const std::array<std::string, 7> RequestMethods = {
+    "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"
+    };
 private:
     inline static bool settingsWindowVisible;
     inline static bool m_consoleWindowVisible;
