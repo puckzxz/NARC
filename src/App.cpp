@@ -34,7 +34,7 @@ bool App::Init()
     freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 #endif
     Log::Init();
-    SettingsManager::Init();
+    Settings::Init();
     m_windows.push_back(WorkspaceWindow::Instance());
     m_windows.push_back(RequestWindow::Instance());
     m_windows.push_back(ResponseWindow::Instance());
@@ -54,7 +54,7 @@ bool App::Init()
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-    m_settings = SettingsManager::GetSettings();
+    m_settings = Settings::Get();
     if (m_settings.maximized)
     {
         glfwWindowHint(GLFW_MAXIMIZED, 1);
@@ -105,7 +105,7 @@ bool App::Init()
             app->m_settings.windowWidth = width;
             const bool maximized = glfwGetWindowAttrib(window, GLFW_MAXIMIZED);
             app->m_settings.maximized = maximized;
-            SettingsManager::SaveSettings(app->m_settings);
+            Settings::Save(app->m_settings);
         });
 #ifdef _WIN32
     if (!ix::initNetSystem())
@@ -204,18 +204,18 @@ void App::Run()
                     if (ImGui::Selectable(themes.at(i).c_str()))
                     {
                         m_settings.theme = static_cast<AppTheme>(i);
-                        SettingsManager::SaveSettings(m_settings);
+                        Settings::Save(m_settings);
                         changeImGuiTheme(m_settings.theme);
                     }
                 }
                 ImGui::EndCombo();
             }
-            static auto pal = SettingsManager::GetPalette();
+            static auto pal = Settings::GetPalette();
             for (int i = 0; i < (int)TextEditor::PaletteIndex::Max; ++i)
             {
                 auto color = ImGui::ColorConvertU32ToFloat4(pal[i]);
                 color.w *= ImGui::GetStyle().Alpha;
-                ImGui::ColorEdit4(std::string(SettingsManager::PaletteIndexNames[i]).c_str(), &color.x);
+                ImGui::ColorEdit4(std::string(Settings::PaletteIndexNames[i]).c_str(), &color.x);
                 pal[i] = ImGui::ColorConvertFloat4ToU32(color);
             }
             ResponseWindow::Instance()->GetEditor()->SetPalette(pal);
@@ -223,12 +223,12 @@ void App::Run()
             if (ImGui::Button("Save"))
             {
                 m_settings.palette = pal;
-                SettingsManager::SaveSettings(m_settings);
+                Settings::Save(m_settings);
             }
             ImGui::SameLine();
             if (ImGui::Button("Reset Palette"))
             {
-                pal = SettingsManager::GetDefaultPalette();
+                pal = Settings::GetDefaultPalette();
             }
 
             ImGui::End();

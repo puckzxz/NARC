@@ -4,7 +4,7 @@
 #include "ixwebsocket/IXNetSystem.h"
 #include "ixwebsocket/IXSocketMbedTLS.h"
 #endif
-#include "SettingsManager.h"
+#include "Settings.h"
 #include "GLFW/glfw3.h"
 #include "Window.h"
 
@@ -23,7 +23,7 @@ private:
     inline static bool settingsWindowVisible;
     inline static bool m_consoleWindowVisible;
     GLFWwindow* m_appWindow;
-    Settings m_settings;
+    AppSettings m_settings;
     static void changeImGuiTheme(AppTheme theme);
     std::vector<Window*> m_windows;
 };

@@ -13,7 +13,7 @@ RequestWindow::RequestWindow()
     m_editor.SetShowWhitespaces(false);
     m_queryParams.emplace_back("", "");
     m_headers.emplace_back("Content-Type", "application/json");
-    m_editor.SetPalette(SettingsManager::GetPalette());
+    m_editor.SetPalette(Settings::GetPalette());
 }
 
 int RequestWindow::findRequestIndex(const std::string& requestMethodName)

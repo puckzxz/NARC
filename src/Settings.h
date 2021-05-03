@@ -11,7 +11,8 @@ using json = nlohmann::json;
 
 using UserPalette = std::unordered_map<ImU32 , std::string>;
 
-static TextEditor::Palette s_p = { {
+static TextEditor::Palette s_p = {
+    {
         0xff7f7f7f,	// Default
         0xffd69c56,	// Key
         0xff7070e0,	// String
@@ -25,7 +26,8 @@ static TextEditor::Palette s_p = { {
         0x40000000, // Current line fill
         0x40808080, // Current line fill (inactive)
         0x40a0a0a0, // Current line edge
-    } };
+    }
+};
 
 enum AppTheme
 {
@@ -34,7 +36,7 @@ enum AppTheme
     Classic
 };
 
-struct Settings
+struct AppSettings
 {
     int32_t windowWidth;
     int32_t windowHeight;
@@ -42,15 +44,15 @@ struct Settings
     AppTheme theme;
     TextEditor::Palette palette;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, windowWidth, windowHeight, maximized, theme, palette);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(AppSettings, windowWidth, windowHeight, maximized, theme, palette);
 };
 
-class SettingsManager
+class Settings
 {
 public:
-    static void SaveSettings(const Settings& s);
+    static void Save(const AppSettings& s);
 
-    static const Settings& GetSettings();
+    static const AppSettings& Get();
 
     static TextEditor::Palette GetPalette();
 
@@ -77,5 +79,5 @@ public:
         "Current line edge"
     };
 private:
-    SettingsManager() = default;;
+    Settings() = default;;
 };

@@ -1,4 +1,4 @@
-#include "SettingsManager.h"
+#include "Settings.h"
 #include "Console.h"
 
 #include <fstream>
@@ -8,11 +8,11 @@
 
 static std::string s_settingsFilename = "settings.narc";
 
-static Settings currentSettings;
+static AppSettings currentSettings;
 
 static bool writeDefaultSettingsFile()
 {
-    Settings s;
+    AppSettings s;
     s.windowWidth = 1280;
     s.windowHeight = 720;
     s.maximized = false;
@@ -48,7 +48,7 @@ static void loadSettings()
     is.close();
     try
     {
-        currentSettings = j.get<Settings>();
+        currentSettings = j.get<AppSettings>();
     }
     catch (const std::exception& e)
     {
@@ -59,7 +59,7 @@ static void loadSettings()
     }
 }
 
-void SettingsManager::SaveSettings(const Settings& s)
+void Settings::Save(const AppSettings& s)
 {
     std::ofstream os(s_settingsFilename);
     const json j = s;
@@ -68,17 +68,17 @@ void SettingsManager::SaveSettings(const Settings& s)
     loadSettings();
 }
 
-const Settings& SettingsManager::GetSettings()
+const AppSettings& Settings::Get()
 {
     return currentSettings;
 }
 
-void SettingsManager::Init()
+void Settings::Init()
 {
     loadSettings();
 }
 
-TextEditor::Palette SettingsManager::GetPalette()
+TextEditor::Palette Settings::GetPalette()
 {
     return currentSettings.palette;
 }

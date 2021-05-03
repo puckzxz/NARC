@@ -12,7 +12,7 @@ ResponseWindow::ResponseWindow() : m_response()
     m_name = "Response";
     m_editor.SetLanguageDefinition(TextEditor::LanguageDefinition::JSON());
     m_editor.SetShowWhitespaces(false);
-    m_editor.SetPalette(SettingsManager::GetPalette());
+    m_editor.SetPalette(Settings::GetPalette());
     Loading = false;
 }
 
