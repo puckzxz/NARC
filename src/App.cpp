@@ -195,6 +195,7 @@ void App::Run()
 
         if (settingsWindowVisible)
         {
+            static std::string saveButtonName = "Save";
             ImGui::Begin("Settings", &settingsWindowVisible);
             static std::array<std::string, 3> themes = { "Dark", "Light", "Classic" };
             if (ImGui::BeginCombo("Theme", themes.at(m_settings.theme).c_str()))
@@ -204,8 +205,8 @@ void App::Run()
                     if (ImGui::Selectable(themes.at(i).c_str()))
                     {
                         m_settings.theme = static_cast<AppTheme>(i);
-                        Settings::Save(m_settings);
                         changeImGuiTheme(m_settings.theme);
+                        saveButtonName = "Save*";
                     }
                 }
                 ImGui::EndCombo();
@@ -215,22 +216,26 @@ void App::Run()
             {
                 auto color = ImGui::ColorConvertU32ToFloat4(pal[i]);
                 color.w *= ImGui::GetStyle().Alpha;
-                ImGui::ColorEdit4(std::string(Settings::PaletteIndexNames[i]).c_str(), &color.x);
+                if (ImGui::ColorEdit4(std::string(Settings::PaletteIndexNames[i]).c_str(), &color.x))
+                {
+                    saveButtonName = "Save*";
+                }
                 pal[i] = ImGui::ColorConvertFloat4ToU32(color);
             }
             ResponseWindow::Instance()->GetEditor()->SetPalette(pal);
             RequestWindow::Instance()->GetEditor()->SetPalette(pal);
-            if (ImGui::Button("Save"))
+            if (ImGui::Button("Reset Palette"))
+            {
+                saveButtonName = "Save*";
+                pal = Settings::GetDefaultPalette();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(saveButtonName.c_str()))
             {
                 m_settings.palette = pal;
                 Settings::Save(m_settings);
+                saveButtonName = "Save";
             }
-            ImGui::SameLine();
-            if (ImGui::Button("Reset Palette"))
-            {
-                pal = Settings::GetDefaultPalette();
-            }
-
             ImGui::End();
         }
 
