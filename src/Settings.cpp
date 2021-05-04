@@ -17,7 +17,7 @@ static bool writeDefaultSettingsFile()
     s.windowHeight = 720;
     s.maximized = false;
     s.theme = AppTheme::Dark;
-    s.palette = s_p;
+    s.palette = Settings::GetDefaultPalette();
     try
     {
         std::ofstream os(s_settingsFilename);

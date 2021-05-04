@@ -11,24 +11,6 @@ using json = nlohmann::json;
 
 using UserPalette = std::unordered_map<ImU32 , std::string>;
 
-static TextEditor::Palette s_p = {
-    {
-        0xff7f7f7f,	// Default
-        0xffd69c56,	// Key
-        0xff7070e0,	// String
-        0xff70a0e0, // Keyword
-        0xff00ff00,	// Number
-        0xffffffff, // Punctuation
-        0xff101010, // Background
-        0xffe0e0e0, // Cursor
-        0x80a06020, // Selection
-        0xff707000, // Line number
-        0x40000000, // Current line fill
-        0x40808080, // Current line fill (inactive)
-        0x40a0a0a0, // Current line edge
-    }
-};
-
 enum AppTheme
 {
     Dark,
@@ -58,7 +40,7 @@ public:
 
     static TextEditor::Palette GetDefaultPalette()
     {
-        return s_p;
+        return TextEditor::GetDarkPalette();
     }
 
     static void Init();
@@ -79,5 +61,5 @@ public:
         "Current line edge"
     };
 private:
-    Settings() = default;;
+    Settings() = default;
 };
