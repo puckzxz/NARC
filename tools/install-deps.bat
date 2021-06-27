@@ -6,7 +6,7 @@ IF NOT EXIST vcpkg (
 
 PUSHD vcpkg
 
-git checkout 105456798402aa5f494ffeb3b19dd0d870656d39
+git checkout bb002cdd1a2c9eacbe60d8383fb5d437752b1e4e
 
 IF NOT EXIST vcpkg.exe (
     CALL bootstrap-vcpkg.bat

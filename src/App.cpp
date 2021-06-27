@@ -80,7 +80,6 @@ bool App::Init()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-    io.ConfigDockingWithShift = true;
     io.ConfigDockingTransparentPayload = true;
     changeImGuiTheme(m_settings.theme);
     auto& style = ImGui::GetStyle();
