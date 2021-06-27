@@ -11,31 +11,31 @@ jobs:
   win64:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Install MSBuild
-      uses: microsoft/setup-msbuild@v1.0.2
-      
-    - name: Install vcpkg
-      uses: lukka/run-vcpkg@v6.2
-      with:
-        setupOnly: true
-        vcpkgGitCommitId: 105456798402aa5f494ffeb3b19dd0d870656d39
+      - uses: actions/checkout@v2
 
-    - name: Install Dependencies
-      shell: cmd
-      run: ".\\tools\\install-deps.bat"
+      - name: Install MSBuild
+        uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Run CMake
-      shell: powershell
-      run: ".\\tools\\cmake.bat"
+      - name: Install vcpkg
+        uses: lukka/run-vcpkg@v6.2
+        with:
+          setupOnly: true
+          vcpkgGitCommitId: bb002cdd1a2c9eacbe60d8383fb5d437752b1e4e
 
-    - name: Build
-      run: msbuild /m /p:Configuration=${{env.BUILD_TYPE}} build/NARC.sln
-      
-    - name: Upload Portable ZIP
-      uses: actions/upload-artifact@v2
-      with:
-        name: NARC-win-x64-portable
-        path: |
-          build/Release/*
+      - name: Install Dependencies
+        shell: cmd
+        run: ".\\tools\\install-deps.bat"
+
+      - name: Run CMake
+        shell: powershell
+        run: ".\\tools\\cmake.bat"
+
+      - name: Build
+        run: msbuild /m /p:Configuration=${{env.BUILD_TYPE}} build/NARC.sln
+
+      - name: Upload Portable ZIP
+        uses: actions/upload-artifact@v2
+        with:
+          name: NARC-win-x64-portable
+          path: |
+            build/Release/*
